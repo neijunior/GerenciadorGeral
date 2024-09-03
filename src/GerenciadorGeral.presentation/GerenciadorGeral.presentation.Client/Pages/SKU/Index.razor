@@ -1,0 +1,70 @@
+﻿@page "/Sku/Index"
+
+@using GerenciadorGeral.application.DTO;
+@inject IJSRuntime JSRuntime;
+@inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
+@rendermode InteractiveServer
+
+<h3>sku</h3>
+
+<a href="/SKU/Editar" class="btn btn-sucess">Criar</a>
+
+<table class="table table-responsive table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Unidade de Medida</th>
+            <th>Ações</th>            
+        </tr>
+    </thead>
+    <tbody>
+        @if (listSkus != null && listSkus.Count() > 0)
+        {
+            foreach (var sku in listSkus)
+            {
+                <tr>
+                    <td>@sku.Nome</td>
+                    <td>@sku.UnidadeMedida</td>
+                    <td>
+                        <a href="/Sku/Editar/@sku.Id" class="btn btn-primary">Editar</a>
+                        <button class="btn btn-danger" onclick="Delete(@sku.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    List<SKUDTO> listSkus = new();
+    protected override async Task OnInitializedAsync()
+    {
+        listSkus = await PopularSkus();
+    }
+
+    private async Task<List<SKUDTO>> PopularSkus()
+    {
+        var lista = await skuApp.SelectAll();
+        return lista.Select(x => new SKUDTO
+            {
+                Id = x.Id,
+                Nome = x.Nome,
+                UnidadeMedida = x.UnidadeMedida
+            }).ToList();
+    }
+
+    async Task Delete(int Id)
+    {
+        bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o sku?");
+        if (!confirma)
+            return;
+
+        var sku = await skuApp.SelectById(Id);
+
+        await skuApp.Delete(sku.Id);
+
+        listSkus = await PopularSkus();
+
+        StateHasChanged();
+    }
+}
