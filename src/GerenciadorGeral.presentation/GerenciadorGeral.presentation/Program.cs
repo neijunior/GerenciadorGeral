@@ -1,5 +1,6 @@
-using GerenciadorGeral.infra.IoC;
+using GerenciadorGeral.presentation.Client.Pages;
 using GerenciadorGeral.presentation.Components;
+using GerenciadorGeral.infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 

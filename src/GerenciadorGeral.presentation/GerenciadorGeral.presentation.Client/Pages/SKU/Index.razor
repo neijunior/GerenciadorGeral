@@ -3,7 +3,7 @@
 @using GerenciadorGeral.application.DTO;
 @inject IJSRuntime JSRuntime;
 @inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
-@rendermode InteractiveServer
+@rendermode InteractiveAuto
 
 <h3>sku</h3>
 
@@ -27,7 +27,7 @@
                     <td>@sku.UnidadeMedida</td>
                     <td>
                         <a href="/Sku/Editar/@sku.Id" class="btn btn-primary">Editar</a>
-                        <button class="btn btn-danger" onclick="Delete(@sku.Id)">Excluir</button>
+                        <button class="btn btn-danger" @onclick="async () => Delete(sku.Id)">Excluir</button>
                     </td>
                 </tr>
             }
@@ -53,7 +53,7 @@
             }).ToList();
     }
 
-    async Task Delete(int Id)
+    public async Task Delete(Guid Id)
     {
         bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o sku?");
         if (!confirma)

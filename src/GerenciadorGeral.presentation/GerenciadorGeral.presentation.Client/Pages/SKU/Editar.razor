@@ -1,84 +1,80 @@
-﻿@page "/Sku/Editar/{id:int?}"
+﻿@page "/Sku/Editar/{id?}"
 
 @using GerenciadorGeral.application.DTO
 @inject NavigationManager navManager;
 @inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
+@inject GerenciadorGeral.application.Interfaces.IUnidadeMedidaApp unidadeMedidaApp;
 @rendermode InteractiveAuto
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header">Criar SKU</div>
-                <div class="card-body">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">Criar SKU</div>
+        <div class="card-body">
 
-                    <EditForm Model="skuModel" OnValidSubmit="EditarSku" FormName="Sku">
+          <EditForm Model="skuModel" OnValidSubmit="EditarSku" FormName="Sku">
 
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-                        <div class="form-group mb-3">
-                            <label class="form-label">Nome</label>
-                            <InputText @bind-Value="skuModel.Nome" class="form-control"></InputText>
-                            <ValidationMessage For="()=>skuModel.Nome"></ValidationMessage>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="skuUnidadeMedida">Unidade Medida</label>
-                            <InputSelect id="skuUnidadeMedida" @bind-Value="skuModel.UnidadeMedida">
-                                <option value="">Selecione</option>
-                                @foreach (var item in ListaUnidadeMedida)
-                                {
-                                    <option value="@item.Codigo">@item.Nome</option>
-                                }
-                            </InputSelect>
-                            <ValidationMessage For="()=>skuModel.UnidadeMedida"></ValidationMessage>
-                        </div>
-
-
-                        <button type="submit" class="btn btn-success">Salvar</button>
-                    </EditForm>
-                </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Nome</label>
+              <InputText @bind-Value="skuModel.Nome" class="form-control"></InputText>
+              <ValidationMessage For="()=>skuModel.Nome"></ValidationMessage>
             </div>
+
+            <div class="form-group mb-3">
+              <label for="skuUnidadeMedida">Unidade Medida</label>
+              <InputSelect id="skuUnidadeMedida" @bind-Value="skuModel.UnidadeMedida">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaUnidadeMedida)
+                {
+                  <option value="@item.Codigo">@item.Descricao</option>
+                }
+              </InputSelect>
+              <ValidationMessage For="()=>skuModel.UnidadeMedida"></ValidationMessage>
+            </div>
+
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </EditForm>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 @code {
 
-    public SKUDTO skuModel { get; set; } = new();
-    public List<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; } = new();
+  public SKUDTO skuModel { get; set; } = new();
+  public ICollection<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; }
 
-    [Parameter] public int? id { get; set; }
+  [Parameter] public string id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
+  {
+    ListaUnidadeMedida = await unidadeMedidaApp.SelectAll();
+    skuModel = !string.IsNullOrEmpty(id) ? await skuApp.SelectById(Guid.Parse(id)) : skuModel;
+  }
+
+  private async Task EditarSku()
+  {
+    GerenciadorGeral.domain.Entidades.SKU skuBD = new()
+      {
+        Id = skuModel.Id,
+        Nome = skuModel.Nome,
+        UnidadeMedida = skuModel.UnidadeMedida
+      };
+
+    if (string.IsNullOrEmpty(id))
     {
-        ListaUnidadeMedida = new List<UnidadeMedidaDTO>()
-        {
-          new UnidadeMedidaDTO() { Id = 1, Codigo = "KG", Nome = "Kilograma" },
-          new UnidadeMedidaDTO() { Id = 2, Codigo = "UN", Nome = "Unidade" },
-          new UnidadeMedidaDTO() { Id = 3, Codigo = "LT", Nome = "Litro" },
-          new UnidadeMedidaDTO() { Id = 4, Codigo = "CX", Nome = "Caixa" },
-          new UnidadeMedidaDTO() { Id = 5, Codigo = "KwH", Nome = "Kilowatt-hora" }
-        };
-
-        skuModel = id.HasValue && id.Value != 0 ? await skuApp.SelectById(id.Value) : skuModel;
+      skuBD.Id = Guid.NewGuid();
+      await skuApp.Insert(skuBD);
     }
+    else
+      await skuApp.Update(skuBD);
 
-    private async Task EditarSku()
-    {
-        GerenciadorGeral.domain.Entidades.SKU skuBD = new()
-            {
-                Id = skuModel.Id,
-                Nome = skuModel.Nome,
-                UnidadeMedida = skuModel.UnidadeMedida
-            };
-
-        if (skuBD.Id == 0)
-            await skuApp.Insert(skuBD);
-        else
-            await skuApp.Update(skuBD);
-
-        navManager.NavigateTo("/Sku/Index");
-    }
+    navManager.NavigateTo("/Sku/Index");
+  }
 }

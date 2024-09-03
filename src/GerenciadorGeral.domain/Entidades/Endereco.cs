@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GerenciadorGeral.application.DTO
+namespace GerenciadorGeral.domain.Entidades
 {
-  public class BaseDTO
+  public class Endereco : EntidadeBase
   {
-    public Guid Id { get; set; }
   }
 }

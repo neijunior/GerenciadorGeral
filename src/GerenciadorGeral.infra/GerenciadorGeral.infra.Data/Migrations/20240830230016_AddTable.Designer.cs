@@ -11,42 +11,36 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20240826185340_TesteMigration2")]
-    partial class TesteMigration2
+    [Migration("20240830230016_AddTable")]
+    partial class AddTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
+            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.UnidadeMedida", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Id");
+                    b.Property<string>("Codigo")
+                        .HasMaxLength(5)
+                        .HasColumnType("varchar")
+                        .HasColumnName("Codigo");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nome")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("Nome");
+                        .HasColumnType("varchar")
+                        .HasColumnName("Descricao");
 
-                    b.Property<string>("UnidadeMedida")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UnidadeMedida");
+                    b.HasKey("Codigo");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Sku", "dbo");
+                    b.ToTable("UnidadeMedida", "dbo");
                 });
 #pragma warning restore 612, 618
         }

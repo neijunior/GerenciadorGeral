@@ -29,7 +29,7 @@ namespace GerenciadorGeral.infra.Data.Repositorios
             }
         }
 
-        public async Task Delete(int Id)
+        public async Task Delete(Guid Id)
         {
             var entity = await SelectById(Id);
             if (entity != null)
@@ -60,7 +60,7 @@ namespace GerenciadorGeral.infra.Data.Repositorios
             return _contexto.Set<TEntity>().ToList();
         }
 
-        public async Task<TEntity> SelectById(int Id)
+        public async Task<TEntity> SelectById(Guid Id)
         {
             return _contexto.Set<TEntity>().Find(Id);
         }

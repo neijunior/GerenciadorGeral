@@ -2,6 +2,10 @@
 {
   public class EntidadeBase
   {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
+    public EntidadeBase()
+    {
+      this.Id = Guid.NewGuid();
+    }
   }
 }

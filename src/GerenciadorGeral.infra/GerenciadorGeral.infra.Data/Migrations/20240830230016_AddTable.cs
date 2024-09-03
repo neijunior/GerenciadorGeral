@@ -5,7 +5,7 @@
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class TesteMigration4 : Migration
+    public partial class AddTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,18 +14,16 @@ namespace GerenciadorGeral.infra.Data.Migrations
                 name: "dbo");
 
             migrationBuilder.CreateTable(
-                name: "SKU",
+                name: "UnidadeMedida",
                 schema: "dbo",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    UnidadeMedida = table.Column<string>(type: "varchar", nullable: false)
+                    Codigo = table.Column<string>(type: "varchar(5)", maxLength: 5, nullable: false),
+                    Descricao = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SKU", x => x.Id);
+                    table.PrimaryKey("PK_UnidadeMedida", x => x.Codigo);
                 });
         }
 
@@ -33,7 +31,7 @@ namespace GerenciadorGeral.infra.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SKU",
+                name: "UnidadeMedida",
                 schema: "dbo");
         }
     }

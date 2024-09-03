@@ -4,5 +4,6 @@
   {
     public string Nome { get; set; }
     public string UnidadeMedida { get; set; }
+    public virtual ICollection<CompraItem> ListaItens { get; set; }
   }
 }

@@ -2,6 +2,7 @@
 using GerenciadorGeral.infra.Data.Mapeamentos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace GerenciadorGeral.infra.Data.Contextos
 {
@@ -9,6 +10,8 @@ namespace GerenciadorGeral.infra.Data.Contextos
   {
     public DbSet<SKU> SKU { get; set; }
     public DbSet<UnidadeMedida> UnidadeMedida { get; set; }
+    public DbSet<Fornecedor> Fornecedor { get; set; }
+    public DbSet<Compra> Compra { get; set; }
     public IDbContextTransaction Transaction { get; private set; }
     public Contexto(DbContextOptions<Contexto> options) : base(options)
     {
@@ -65,8 +68,29 @@ namespace GerenciadorGeral.infra.Data.Contextos
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       base.OnModelCreating(modelBuilder);
-      modelBuilder.ApplyConfiguration(new SKUMap());
-      modelBuilder.ApplyConfiguration(new UnidadeMedidaMap());
+      modelBuilder.HasDefaultSchema("dbo");
+      //foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetProperties().Where(p => new[] { typeof(string), typeof(decimal) }.Contains(p.ClrType))))
+      //{
+      //    if (property.ClrType == typeof(string))
+      //        property.SetColumnType("varchar(200)");
+      //    else if (property.ClrType == typeof(decimal))
+      //        property.SetColumnType("decimal(16,2)");
+
+      //    //switch (property.ClrType)
+      //    //{
+      //    //  case  typeof(string):
+
+      //    //    break;
+      //    //  case typeof(decimal):
+
+      //    //    break;
+      //    //  default:
+      //    //    break;
+      //    //}
+      //}
+      modelBuilder.ApplyConfiguration(new UnidadeMedidaMap<UnidadeMedida>());
+      modelBuilder.ApplyConfigurationsFromAssembly(typeof(Contexto).Assembly);
+
       modelBuilder.PopularTabela();
     }
   }

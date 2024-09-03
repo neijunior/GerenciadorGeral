@@ -3,7 +3,8 @@ using GerenciadorGeral.domain.Entidades;
 
 namespace GerenciadorGeral.application.Interfaces
 {
-  public interface IUnidadeMedidaApp: IAppBase<UnidadeMedida, UnidadeMedidaDTO>
+  public interface IUnidadeMedidaApp
   {
+    Task<ICollection<UnidadeMedidaDTO>> SelectAll();
   }
 }

@@ -1,18 +1,20 @@
 ﻿using GerenciadorGeral.domain.Entidades;
 using GerenciadorGeral.domain.Interfaces.Repositorios;
 using GerenciadorGeral.infra.Data.Contextos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GerenciadorGeral.infra.Data.Repositorios
 {
-  public class UnidadeMedidaRepositorio : RepositorioBase<UnidadeMedida>, IUnidadeMedidaRepositorio
+  public class UnidadeMedidaRepositorio : IUnidadeMedidaRepositorio
   {
-    public UnidadeMedidaRepositorio(Contexto context) : base(context)
+    protected readonly Contexto _contexto;
+    public UnidadeMedidaRepositorio(Contexto context) 
     {
+      this._contexto = context;
+    }
+
+    public async Task<ICollection<UnidadeMedida>> SelectAll()
+    {
+      return _contexto.Set<UnidadeMedida>().ToList();
     }
   }
 }

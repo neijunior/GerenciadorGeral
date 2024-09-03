@@ -18,7 +18,7 @@ namespace GerenciadorGeral.application.Servicos
             this._iMapper = iMapper;
             this._servico = servico;
         }
-        public async Task Delete(int Id)
+        public async Task Delete(Guid Id)
         {
             await _servico.Delete(Id);
         }
@@ -39,7 +39,7 @@ namespace GerenciadorGeral.application.Servicos
             return lista;
         }
 
-        public async Task<TEntidadeDTO> SelectById(int Id)
+        public async Task<TEntidadeDTO> SelectById(Guid Id)
         {
             return _iMapper.Map<TEntidadeDTO>(await _servico.SelectById(Id));
         }

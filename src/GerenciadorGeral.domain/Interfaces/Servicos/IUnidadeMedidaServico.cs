@@ -2,7 +2,8 @@
 
 namespace GerenciadorGeral.domain.Interfaces.Servicos
 {
-  public interface IUnidadeMedidaServico : IServicoBase<UnidadeMedida>
+  public interface IUnidadeMedidaServico
   {
+    Task<ICollection<UnidadeMedida>> SelectAll();
   }
 }

@@ -7,10 +7,10 @@ namespace GerenciadorGeral.application.Interfaces
                                                    where TEntityDTO : BaseDTO
     {
         Task Insert(TEntity entity);
-        Task Delete(int Id);
+        Task Delete(Guid Id);
         Task Delete(TEntity entity);
         Task Update(TEntity entity);
-        Task<TEntityDTO> SelectById(int Id);
+        Task<TEntityDTO> SelectById(Guid Id);
         Task<ICollection<TEntityDTO>> SelectAll();
     }
 }
