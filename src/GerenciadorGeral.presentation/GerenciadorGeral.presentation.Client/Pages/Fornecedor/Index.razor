@@ -1,0 +1,65 @@
+﻿@page "/Fornecedor/Index"
+
+@using GerenciadorGeral.application.DTO;
+@using Formatacao
+@inject IJSRuntime JSRuntime;
+@inject GerenciadorGeral.application.Interfaces.IFornecedorApp fornecedorApp;
+@rendermode InteractiveAuto
+
+<h3>sku</h3>
+
+<a href="/Fornecedor/Editar" class="btn btn-sucess">Criar</a>
+
+<table class="table table-responsive table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Unidade de Medida</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (listaFornecedores != null && listaFornecedores.Count() > 0)
+        {
+            foreach (var item in listaFornecedores)
+            {
+                <tr>
+                    <td>@item.CpfCnpj.FormatarCpfCnpj()</td>
+                    <td>@item.RazaoSocial</td>
+                    <td>
+                        <a href="/Fornecedor/Editar/@item.Id" class="btn btn-primary">Editar</a>
+                        <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    ICollection<FornecedorDTO> listaFornecedores = new HashSet<FornecedorDTO>();
+    protected override async Task OnInitializedAsync()
+    {
+        listaFornecedores = await PopularFornecedores();
+    }
+
+    private async Task<ICollection<FornecedorDTO>> PopularFornecedores()
+    {
+        return await fornecedorApp.SelectAll();
+    }
+
+    public async Task Delete(Guid Id)
+    {
+        bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o Fornecedor?");
+        if (!confirma)
+            return;
+
+        var sku = await fornecedorApp.SelectById(Id);
+
+        await fornecedorApp.Delete(sku.Id);
+
+        listaFornecedores = await PopularFornecedores();
+
+        StateHasChanged();
+    }
+}

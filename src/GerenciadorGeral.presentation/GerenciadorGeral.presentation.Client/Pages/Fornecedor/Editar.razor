@@ -1,0 +1,71 @@
+﻿@page "/Fornecedor/Editar/{id?}"
+
+@using GerenciadorGeral.application.DTO
+@using Formatacao;
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.IFornecedorApp fornecedorApp;
+@rendermode InteractiveAuto
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">Criar Fornecedor</div>
+                <div class="card-body">
+
+                    <EditForm Model="fornecedorModel" OnValidSubmit="EditarFornecedor" FormName="Fornecedor">
+
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">CPF/CNPJ</label>
+                            <InputText @bind-Value="fornecedorModel.CpfCnpj" class="form-control"></InputText>
+                            <ValidationMessage For="()=>fornecedorModel.CpfCnpj"></ValidationMessage>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">RazaoSocial</label>
+                            <InputText @bind-Value="fornecedorModel.RazaoSocial " class="form-control"></InputText>
+                            <ValidationMessage For="()=>fornecedorModel.RazaoSocial"></ValidationMessage>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public FornecedorDTO fornecedorModel { get; set; } = new();
+
+    [Parameter] public string id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        fornecedorModel = !string.IsNullOrEmpty(id) ? await fornecedorApp.SelectById(Guid.Parse(id)) : fornecedorModel;
+    }
+
+    private async Task EditarFornecedor()
+    {
+        GerenciadorGeral.domain.Entidades.Fornecedor fornBD = new()
+            {
+                Id = fornecedorModel.Id,
+                RazaoSocial = fornecedorModel.RazaoSocial,
+                CpfCnpj = fornecedorModel.CpfCnpj.SomenteNumeros()
+            };
+
+        if (string.IsNullOrEmpty(id))
+        {
+            fornBD.Id = Guid.NewGuid();
+            await fornecedorApp.Insert(fornBD);
+        }
+        else
+            await fornecedorApp.Update(fornBD);
+
+        navManager.NavigateTo("/Fornecedor/Index");
+    }
+}

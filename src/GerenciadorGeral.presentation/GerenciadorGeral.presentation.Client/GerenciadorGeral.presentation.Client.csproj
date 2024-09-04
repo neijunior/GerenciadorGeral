@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilitario\Formatacao\Formatacao.csproj" />
     <ProjectReference Include="..\..\GerenciadorGeral.application\GerenciadorGeral.application.csproj" />
   </ItemGroup>
 

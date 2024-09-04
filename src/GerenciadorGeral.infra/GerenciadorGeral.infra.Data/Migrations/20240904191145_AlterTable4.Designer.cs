@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20240904191145_AlterTable4")]
+    partial class AlterTable4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,19 +103,16 @@ namespace GerenciadorGeral.infra.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CpfCnpj")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CpfCnpj");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<Guid?>("IdEndereco")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RazaoSocial")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 

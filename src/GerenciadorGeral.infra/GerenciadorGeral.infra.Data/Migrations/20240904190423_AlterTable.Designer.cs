@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20240904190423_AlterTable")]
+    partial class AlterTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,16 +37,16 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Desconto")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("IdFornecedor")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Observacao")
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ValorTotal")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -60,7 +63,7 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnName("Id");
 
                     b.Property<decimal>("Desconto")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("IdCompra")
                         .HasColumnType("uniqueidentifier");
@@ -69,23 +72,23 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Quantidade")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("QuantidadePorUnidadeMedida")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("QuantidadePorUnidadeMedidaTotal")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UnidadeMedida")
                         .IsRequired()
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ValorTotal")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ValorUnitario")
-                        .HasColumnType("decimal(16,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -100,21 +103,18 @@ namespace GerenciadorGeral.infra.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CpfCnpj")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("varchar")
-                        .HasColumnName("CpfCnpj");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("IdEndereco")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("RazaoSocial")
+                    b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -2,7 +2,7 @@
 
 namespace GerenciadorGeral.domain.Interfaces.Repositorios
 {
-  public interface ISKURepositorio : IRepositorioBase<SKU>
+  public interface ICompraRepositorio : IRepositorioBase<Compra>
   {
   }
 }

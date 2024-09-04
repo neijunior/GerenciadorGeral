@@ -1,0 +1,64 @@
+﻿@page "/Compra/Index"
+
+@using GerenciadorGeral.application.DTO;
+@inject IJSRuntime JSRuntime;
+@inject GerenciadorGeral.application.Interfaces.ICompraApp compraApp;
+@rendermode InteractiveAuto
+
+<h3>sku</h3>
+
+<a href="/SKU/Editar" class="btn btn-sucess">Criar</a>
+
+<table class="table table-responsive table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Unidade de Medida</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (listCompras != null && listCompras.Count() > 0)
+        {
+            foreach (var item in listCompras)
+            {
+                <tr>
+                    @* <td>@item.Nome</td>
+                    <td>@item.UnidadeMedida</td> *@
+                    <td>
+                        <a href="/Compra/Editar/@item.Id" class="btn btn-primary">Editar</a>
+                        <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    ICollection<CompraDTO> listCompras = new HashSet<CompraDTO>();
+    protected override async Task OnInitializedAsync()
+    {
+        listCompras = await PopularCompras();
+    }
+
+    private async Task<ICollection<CompraDTO>> PopularCompras()
+    {
+        return await compraApp.SelectAll();        
+    }
+
+    public async Task Delete(Guid Id)
+    {
+        bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o produto?");
+        if (!confirma)
+            return;
+
+        var sku = await compraApp.SelectById(Id);
+
+        await compraApp.Delete(sku.Id);
+
+        listCompras = await PopularCompras();
+
+        StateHasChanged();
+    }
+}

@@ -1,13 +1,13 @@
 ﻿namespace GerenciadorGeral.domain.Entidades
 {
-  public class UnidadeMedida
-  {
-    public UnidadeMedida()
+    public class UnidadeMedida
     {
-      Codigo = string.Empty;
-      Descricao = string.Empty;
+        public UnidadeMedida()
+        {
+            Codigo = string.Empty;
+            Descricao = string.Empty;
+        }
+        public string Codigo { get; set; }
+        public string Descricao { get; set; }
     }
-    public string Codigo { get; set; }
-    public string Descricao { get; set; }
-  }
 }

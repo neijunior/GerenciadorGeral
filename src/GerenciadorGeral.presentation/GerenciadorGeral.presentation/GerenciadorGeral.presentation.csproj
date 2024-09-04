@@ -10,6 +10,10 @@
     <ProjectReference Include="..\..\GerenciadorGeral.infra\GerenciadorGeral.infra.IoC\GerenciadorGeral.infra.IoC.csproj" />
     <ProjectReference Include="..\GerenciadorGeral.presentation.Client\GerenciadorGeral.presentation.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
