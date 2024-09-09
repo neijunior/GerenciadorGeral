@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20240906170229_AddTableMenu")]
+    partial class AddTableMenu
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,9 +147,11 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnName("Titulo");
 
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.Property<string>("styleCss")
+                        .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.HasKey("Id");

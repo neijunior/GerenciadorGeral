@@ -6,10 +6,14 @@ using GerenciadorGeral.domain.Interfaces.Servicos;
 
 namespace GerenciadorGeral.application.Servicos
 {
-  public class CompraApp : ServicoAppBase<Compra, CompraDTO>, ICompraApp
+  public class CompraApp : AppBase<Compra, CompraDTO>, ICompraApp
   {
+    protected readonly ICompraServico _servico;
+    protected readonly IMapper _iMapper;
     public CompraApp(IMapper iMapper, ICompraServico servico) : base(iMapper, servico)
     {
+      this._iMapper = iMapper;
+      this._servico = servico;
     }
   }
 }

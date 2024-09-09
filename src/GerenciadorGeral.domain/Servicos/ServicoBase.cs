@@ -1,6 +1,7 @@
 ﻿using GerenciadorGeral.domain.Entidades;
 using GerenciadorGeral.domain.Interfaces.Repositorios;
 using GerenciadorGeral.domain.Interfaces.Servicos;
+using System.Linq.Expressions;
 
 namespace GerenciadorGeral.domain.Servicos
 {
@@ -34,6 +35,11 @@ namespace GerenciadorGeral.domain.Servicos
     public async Task<TEntity> SelectById(Guid Id)
     {
       return await _repositorio.SelectById(Id);
+    }
+
+    public async Task<TEntity> Consultar<TEntity>(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    {
+      return await _repositorio.Consultar(where, includes);
     }
 
     public async Task Update(TEntity entity)

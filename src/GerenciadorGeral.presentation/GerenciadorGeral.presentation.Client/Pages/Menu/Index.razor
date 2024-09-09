@@ -1,0 +1,87 @@
+﻿@page "/Menu/Index"
+
+@using GerenciadorGeral.application.DTO;
+@inject IJSRuntime JSRuntime;
+@inject GerenciadorGeral.application.Interfaces.IMenuApp menuApp;
+@rendermode InteractiveAuto 
+
+<h3>Menu</h3>
+
+<a href="/Menu/Editar" class="btn btn-sucess">Criar</a>
+
+<table class="table table-responsive table-striped">
+  <thead>
+    <tr>
+      <th>Titulo</th>
+      <th>Url</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (listMenus != null && listMenus.Count() > 0)
+    {
+      foreach (var Menu in listMenus)
+      {
+        <tr>
+          <td>@Menu.Titulo</td>
+          <td>@Menu.Url</td>
+          <td>
+            <a href="/Menu/Editar/@Menu.Id" class="btn btn-primary">Editar</a>
+            <button class="btn btn-danger" @onclick="async () => Delete(Menu.Id)">Excluir</button>
+          </td>
+        </tr>
+        if (Menu.Filhos != null && Menu.Filhos.Count > 0)
+        {
+          foreach (var filhos in Menu.Filhos)
+          {
+            <tr>
+              <td>@filhos.Titulo</td>
+              <td>@filhos.Url</td>
+              <td>
+                <a href="/Menu/Editar/@filhos.Id" class="btn btn-primary">Editar</a>
+                <button class="btn btn-danger" @onclick="async () => Delete(filhos.Id)">Excluir</button>
+              </td>
+            </tr>
+          }
+        }
+      }
+    }
+  </tbody>
+</table>
+
+@code {
+  ICollection<MenuDTO> listMenus = new HashSet<MenuDTO>();
+  protected override async Task OnInitializedAsync()
+  {
+    listMenus = await PopularMenus();
+  }
+
+  private async Task<ICollection<MenuDTO>> PopularMenus()
+  {
+    try
+    {
+      var lista = await menuApp.MontarMenu();
+      return lista;
+    }
+    catch (Exception)
+    {      
+      throw;
+    }
+    
+  }
+
+  public async Task Delete(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o Menu?");
+    if (!confirma)
+      return;
+
+    var Menu = await menuApp.SelectById(Id);
+
+    await menuApp.Delete(Menu.Id);
+
+    listMenus = await PopularMenus();
+
+    StateHasChanged();
+  }
+}

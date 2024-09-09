@@ -1,11 +1,5 @@
 ﻿using GerenciadorGeral.application;
-using GerenciadorGeral.application.Interfaces;
-using GerenciadorGeral.application.Servicos;
-using GerenciadorGeral.domain.Interfaces.Repositorios;
-using GerenciadorGeral.domain.Interfaces.Servicos;
-using GerenciadorGeral.domain.Servicos;
 using GerenciadorGeral.infra.Data.Contextos;
-using GerenciadorGeral.infra.Data.Repositorios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

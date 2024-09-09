@@ -6,7 +6,7 @@ using GerenciadorGeral.domain.Interfaces.Servicos;
 
 namespace GerenciadorGeral.application.Servicos
 {
-    public class FornecedorApp : ServicoAppBase<Fornecedor, FornecedorDTO>, IFornecedorApp
+    public class FornecedorApp : AppBase<Fornecedor, FornecedorDTO>, IFornecedorApp
     {
         public FornecedorApp(IMapper iMapper, IFornecedorServico servico) : base(iMapper, servico)
         {

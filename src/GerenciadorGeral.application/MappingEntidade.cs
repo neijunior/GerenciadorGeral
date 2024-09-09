@@ -4,14 +4,15 @@ using GerenciadorGeral.domain.Entidades;
 
 namespace GerenciadorGeral.application
 {
-    public class MappingEntidade : Profile
+  public class MappingEntidade : Profile
+  {
+    public MappingEntidade()
     {
-        public MappingEntidade()
-        {
-            CreateMap<SKU, SKUDTO>().ReverseMap();
-            CreateMap<UnidadeMedida, UnidadeMedidaDTO>().ReverseMap();
-            CreateMap<Compra, CompraDTO>().ReverseMap();
-            CreateMap<Fornecedor, FornecedorDTO>().ReverseMap();
-        }
+      CreateMap<SKU, SKUDTO>().ReverseMap();
+      CreateMap<UnidadeMedida, UnidadeMedidaDTO>().ReverseMap();
+      CreateMap<Compra, CompraDTO>().ReverseMap();
+      CreateMap<Fornecedor, FornecedorDTO>().ReverseMap();
+      CreateMap<Menu, MenuDTO>().ReverseMap();
     }
+  }
 }

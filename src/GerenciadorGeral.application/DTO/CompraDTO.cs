@@ -10,6 +10,6 @@ namespace GerenciadorGeral.application.DTO
         public DateTime Data { get; set; }
         public string? Observacao { get; set; }
         //public virtual ICollection<CompraItem> ListaItens { get; set; }
-        //public virtual Fornecedor? Fornecedor { get; set; }
+        public FornecedorDTO Fornecedor { get; set; }
     }
 }

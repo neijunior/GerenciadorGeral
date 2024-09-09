@@ -1,18 +1,20 @@
 ﻿using GerenciadorGeral.application.Interfaces;
 using GerenciadorGeral.application.Servicos;
+using GerenciadorGeral.domain.Interfaces.Servicos;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GerenciadorGeral.infra.IoC
 {
-    public static class DependencyInjectionAplicacao
+  public static class DependencyInjectionAplicacao
+  {
+    public static void RegisterAplicacao(this IServiceCollection svcCollection)
     {
-        public static void RegisterAplicacao(this IServiceCollection svcCollection)
-        {
-            svcCollection.AddScoped(typeof(IAppBase<,>), typeof(ServicoAppBase<,>));
-            svcCollection.AddScoped<ISKUApp, SKUApp>();
-            svcCollection.AddScoped<IUnidadeMedidaApp, UnidadeMedidaApp>();
-            svcCollection.AddScoped<ICompraApp, CompraApp>();
-            svcCollection.AddScoped<IFornecedorApp, FornecedorApp>();
-        }
+      svcCollection.AddScoped(typeof(IAppBase<,>), typeof(AppBase<,>));
+      svcCollection.AddScoped<ISKUApp, SKUApp>();
+      svcCollection.AddScoped<IUnidadeMedidaApp, UnidadeMedidaApp>();
+      svcCollection.AddScoped<ICompraApp, CompraApp>();
+      svcCollection.AddScoped<IFornecedorApp, FornecedorApp>();
+      svcCollection.AddScoped<IMenuApp, MenuApp>();
     }
+  }
 }

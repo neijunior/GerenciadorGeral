@@ -1,0 +1,95 @@
+﻿@page "/Compra/Editar/{id?}"
+
+@using GerenciadorGeral.application.DTO
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.ICompraApp compraApp;
+@inject GerenciadorGeral.application.Interfaces.IFornecedorApp fornecedorApp;
+@rendermode InteractiveAuto
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">Criar Compra</div>
+        <div class="card-body">
+
+          <EditForm Model="compra" OnValidSubmit="EditarCompra" FormName="frmCompra">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group mb-3">
+              <label for="Fornecedor">Fornecedor</label>
+              <InputSelect id="CompraPai" @bind-Value="compra.IdFornecedor">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaFornecedor)
+                {
+                  <option value="@item.Id">@item.RazaoSocial</option>
+                }
+              </InputSelect>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Data</label>
+              <InputDate @bind-Value="compra.Data" class="form-control"></InputDate>
+              @* <ValidationMessage For="()=>CompraModel.Titulo"></ValidationMessage> *@
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">URL</label>
+              <InputNumber @bind-Value="compra.ValorTotal" class="form-control"></InputNumber>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Style CSS</label>
+              <InputText @bind-Value="compra.Observacao" class="form-control"></InputText>
+            </div>
+
+            @* <div class="form-group mb-3">
+            <label class="form-label">Ordem</label>
+            <InputText @bind-Value="CompraModel.Ordem" class="form-control"></InputText>
+            </div> *@
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </EditForm>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+  public CompraDTO compra { get; set; } = new();
+  public ICollection<FornecedorDTO> ListaFornecedor { get; set; }
+
+  [Parameter] public string id { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    ListaFornecedor = await fornecedorApp.SelectAll();
+    compra = !string.IsNullOrEmpty(id) ? await compraApp.SelectById(Guid.Parse(id)) : compra;
+  }
+
+  private async Task EditarCompra()
+  {
+    GerenciadorGeral.domain.Entidades.Compra compraBD = new()
+      {
+        Id = compra.Id,
+        IdFornecedor = compra.IdFornecedor,
+        Data = compra.Data,
+        Desconto = 0,
+        ValorTotal = 0,
+        Observacao = compra.Observacao
+      };
+
+    if (string.IsNullOrEmpty(id))
+    {
+      compraBD.Id = Guid.NewGuid();
+      await compraApp.Insert(compraBD);
+    }
+    else
+      await compraApp.Update(compraBD);
+
+    navManager.NavigateTo("/Compra/Index");
+  }
+}

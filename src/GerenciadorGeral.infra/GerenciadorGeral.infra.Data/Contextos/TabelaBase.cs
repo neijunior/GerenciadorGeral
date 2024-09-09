@@ -1,5 +1,6 @@
 ﻿using GerenciadorGeral.domain.Entidades;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace GerenciadorGeral.infra.Data.Contextos
 {

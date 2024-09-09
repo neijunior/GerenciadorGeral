@@ -1,30 +1,114 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Biscoitinhos</a>
-    </div>
+﻿@using GerenciadorGeral.application.DTO
+@using System.Text
+@inject GerenciadorGeral.application.Interfaces.IMenuApp menuApp;
+
+<div class="top-row ps-3 navbar navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="">Gerenciador Geral</a>
+  </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+  <nav class="flex-column">
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Sku/Index">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> SKU
-            </NavLink>
-        </div>
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+      </NavLink>
+    </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Fornecedor/Index">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Fornecedor
-            </NavLink>
-        </div>
-    </nav>
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="Sku/Index">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> SKU
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="Menu/Index">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Menu
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="Fornecedor/Index">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Fornecedor
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="Compra/Index">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Compra
+      </NavLink>
+    </div>
+
+  </nav>
 </div>
 
+@((MarkupString)menu)
+
+@code {
+  public ICollection<MenuDTO> listaMenu;
+  string menu = string.Empty;
+  // protected override async Task OnInitializedAsync()
+  // {
+  //   listaMenu = await menuApp.MontarMenu();
+  //   StringBuilder menuMontado = new StringBuilder();
+  //   MontarHtmlMenu(listaMenu, ref menuMontado);
+  //   this.menu = menuMontado.ToString();
+  // }
+
+  private void MontarHtmlMenu(IEnumerable<MenuDTO> menus, ref StringBuilder html)
+  {
+    foreach (var item in menus)
+    {
+      html.AppendLine(MontarItemMenu(item));
+    }
+    html.Append("</ul>");
+  }
+
+  // private string _itemMenu = @"<div class='nav-item px-3'>
+  //                    <NavLink class='nav-link' href='{0}'>
+  //                   <span class='{1}' aria-hidden='true'></span> {2}
+  //                    </NavLink>
+  //                  </div>";
+  private string _itemMenu = @"<div class='nav-item px-3'><li class='menu__item {0}' >
+	                    <a href='{1}' class='menu__link {2}'>
+                      {5}
+		                  <span class='menu__link-text'>
+		                    {3}
+		                  </span>
+	                    </a>
+                      {4}
+	                  </li></div>";
+  private string MontarItemMenu(MenuDTO menu)
+  {
+    string linkDropDown = (menu.Filhos != null && menu.Filhos.Count > 0) ? "menu__link_dropdown" : "";
+    string item = string.Empty;
+
+    if (menu.Id == menu.IdPai)
+      item = string.Format(this._itemMenu, "menu__item_parent", menu.Filhos.Count > 0 ? "#" : menu.Url, linkDropDown, menu.Titulo, MontarSubMenus(menu), menu.styleCss);
+    else
+      item = string.Format(this._itemMenu, "", menu.Url, linkDropDown, menu.Titulo, "", menu.styleCss);
+
+    return item;
+  }
+
+  private string MontarSubMenus(MenuDTO menu)
+  {
+    StringBuilder filho = new StringBuilder();
+    if (menu.Filhos != null && menu.Filhos.Count > 0)
+    {
+      filho.AppendLine("<ul class='menu__group'>");
+      foreach (var f in menu.Filhos)
+      {
+        filho.AppendLine(MontarItemMenu(f));
+      }
+
+      filho.AppendLine("</ul>");
+    }
+    return filho.ToString();
+  }
+
+}

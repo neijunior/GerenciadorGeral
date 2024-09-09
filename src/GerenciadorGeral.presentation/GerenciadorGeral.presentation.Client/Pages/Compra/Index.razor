@@ -5,60 +5,66 @@
 @inject GerenciadorGeral.application.Interfaces.ICompraApp compraApp;
 @rendermode InteractiveAuto
 
-<h3>sku</h3>
 
-<a href="/SKU/Editar" class="btn btn-sucess">Criar</a>
+<h3>Compras</h3>
+
+<a href="/Compra/Editar" class="btn btn-sucess">Criar</a>
 
 <table class="table table-responsive table-striped">
-    <thead>
+  <thead>
+    <tr>
+      <th>Data</th>
+      <th>Fornecedor</th>
+      <th>Valor Total</th>
+      <th>Observação</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (listCompras != null && listCompras.Count() > 0)
+    {
+      foreach (var item in listCompras)
+      {
         <tr>
-            <th>Nome</th>
-            <th>Unidade de Medida</th>
-            <th>Ações</th>
+          <td>@item.Data</td>
+          @* <td>@item.Fornecedor.RazaoSocial</td> *@
+          <td>@item.ValorTotal.ToString()</td>
+          <td>@item.Observacao</td>
+          <td>
+            <a href="/Compra/Editar/@item.Id" class="btn btn-primary">Editar</a>
+            <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
+          </td>
         </tr>
-    </thead>
-    <tbody>
-        @if (listCompras != null && listCompras.Count() > 0)
-        {
-            foreach (var item in listCompras)
-            {
-                <tr>
-                    @* <td>@item.Nome</td>
-                    <td>@item.UnidadeMedida</td> *@
-                    <td>
-                        <a href="/Compra/Editar/@item.Id" class="btn btn-primary">Editar</a>
-                        <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
+      }
+    }
+  </tbody>
 </table>
 
 @code {
-    ICollection<CompraDTO> listCompras = new HashSet<CompraDTO>();
-    protected override async Task OnInitializedAsync()
-    {
-        listCompras = await PopularCompras();
-    }
+  ICollection<CompraDTO> listCompras = new HashSet<CompraDTO>();
+  protected override async Task OnInitializedAsync()
+  {
+    listCompras = await PopularCompras();
+  }
 
-    private async Task<ICollection<CompraDTO>> PopularCompras()
-    {
-        return await compraApp.SelectAll();        
-    }
+  private async Task<ICollection<CompraDTO>> PopularCompras()
+  {
+    return await compraApp.SelectAll();
+  }
 
-    public async Task Delete(Guid Id)
-    {
-        bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o produto?");
-        if (!confirma)
-            return;
+  public async Task Delete(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o produto?");
+    if (!confirma)
+      return;
 
-        var sku = await compraApp.SelectById(Id);
+    //var sku = await compraApp.SelectById(Id);
 
-        await compraApp.Delete(sku.Id);
+    var sku = await compraApp.Consultar<CompraDTO>(w => w.Id == Id, i => i.Fornecedor);
 
-        listCompras = await PopularCompras();
+    await compraApp.Delete(sku.Id);
 
-        StateHasChanged();
-    }
+    listCompras = await PopularCompras();
+
+    StateHasChanged();
+  }
 }
