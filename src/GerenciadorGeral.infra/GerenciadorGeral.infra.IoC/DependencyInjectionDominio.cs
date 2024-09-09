@@ -9,11 +9,11 @@ namespace GerenciadorGeral.infra.IoC
     public static void RegisterDominio(this IServiceCollection svcCollection)
     {
       svcCollection.AddScoped(typeof(IServicoBase<>), typeof(ServicoBase<>));
-      svcCollection.AddScoped<ISKUServico, SKUServico>();
-      svcCollection.AddScoped<IUnidadeMedidaServico, UnidadeMedidaServico>();
       svcCollection.AddScoped<ICompraServico, CompraServico>();
       svcCollection.AddScoped<IFornecedorServico, FornecedorServico>();
       svcCollection.AddScoped<IMenuServico, MenuServico>();
+      svcCollection.AddScoped<ISKUServico, SKUServico>();
+      svcCollection.AddScoped<IUnidadeMedidaServico, UnidadeMedidaServico>();
     }
   }
 }
