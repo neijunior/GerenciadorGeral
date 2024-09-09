@@ -59,7 +59,7 @@
 
     //var sku = await compraApp.SelectById(Id);
 
-    var sku = await compraApp.Consultar<CompraDTO>(w => w.Id == Id, i => i.Fornecedor);
+    var sku = await compraApp.Consultar<GerenciadorGeral.domain.Entidades.Compra>(w => w.Id == Id, i => i.Fornecedor);
 
     await compraApp.Delete(sku.Id);
 
