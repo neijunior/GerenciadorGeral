@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Utilitario\Formatacao\Formatacao.csproj" />
     <ProjectReference Include="..\..\GerenciadorGeral.application\GerenciadorGeral.application.csproj" />
+    <ProjectReference Include="..\..\GerenciadorGeral.infra\GerenciadorGeral.infra.IoC\GerenciadorGeral.infra.IoC.csproj" />
   </ItemGroup>
 
 </Project>
