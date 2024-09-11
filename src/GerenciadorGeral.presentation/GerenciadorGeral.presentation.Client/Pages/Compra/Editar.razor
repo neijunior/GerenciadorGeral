@@ -7,89 +7,118 @@
 @rendermode InteractiveAuto
 
 <div class="container">
-  <div class="row">
-    <div class="col-md-10">
-      <div class="card">
-        <div class="card-header">Criar Compra</div>
-        <div class="card-body">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">Criar Compra</div>
+                <div class="card-body">
 
-          <EditForm Model="compra" OnValidSubmit="EditarCompra" FormName="frmCompra">
+                    <EditForm Model="compra" OnValidSubmit="EditarCompra" FormName="frmCompra">
 
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
 
-            <div class="form-group mb-3">
-              <label for="Fornecedor">Fornecedor</label>
-              <InputSelect id="CompraPai" @bind-Value="compra.IdFornecedor">
-                <option value="" class="dropdown-item">Selecione</option>
-                @foreach (var item in ListaFornecedor)
-                {
-                  <option value="@item.Id">@item.RazaoSocial</option>
-                }
-              </InputSelect>
+                        <div class="form-group mb-3">
+                            <label for="Fornecedor">Fornecedor</label>
+                            <InputSelect id="CompraPai" @bind-Value="compra.IdFornecedor">
+                                <option value="" class="dropdown-item">Selecione</option>
+                                @foreach (var item in ListaFornecedor)
+                                {
+                                    <option value="@item.Id">@item.RazaoSocial</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Data</label>
+                            <InputDate @bind-Value="compra.Data" class="form-control"></InputDate>
+                            @* <ValidationMessage For="()=>CompraModel.Titulo"></ValidationMessage> *@
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Valor Total</label>
+                            <InputNumber @bind-Value="compra.ValorTotal" class="form-control"></InputNumber>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Observação</label>
+                            <InputText @bind-Value="compra.Observacao" class="form-control"></InputText>
+                        </div>
+
+                        @* <div class="form-group mb-3">
+                        <label class="form-label">Ordem</label>
+                        <InputText @bind-Value="CompraModel.Ordem" class="form-control"></InputText>
+                        </div> *@
+
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                    </EditForm>
+                </div>
             </div>
-
-            <div class="form-group mb-3">
-              <label class="form-label">Data</label>
-              <InputDate @bind-Value="compra.Data" class="form-control"></InputDate>
-              @* <ValidationMessage For="()=>CompraModel.Titulo"></ValidationMessage> *@
-            </div>
-
-            <div class="form-group mb-3">
-              <label class="form-label">Valor Total</label>
-              <InputNumber @bind-Value="compra.ValorTotal" class="form-control"></InputNumber>
-            </div>
-
-            <div class="form-group mb-3">
-              <label class="form-label">Observação</label>
-              <InputText @bind-Value="compra.Observacao" class="form-control"></InputText>
-            </div>
-
-            @* <div class="form-group mb-3">
-            <label class="form-label">Ordem</label>
-            <InputText @bind-Value="CompraModel.Ordem" class="form-control"></InputText>
-            </div> *@
-
-            <button type="submit" class="btn btn-success">Salvar</button>
-          </EditForm>
         </div>
-      </div>
     </div>
-  </div>
+</div>
+
+<button type="button" class="btn btn-labeled btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem"
+        @onclick="@(() => AddNew())">
+</button>
+
+<div id="modalItem" class="modal fade" role="none" data-bs-backdrop="static">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content" style="background-color: transparent; border:black">
+            <div class="modal-body my-0 p-0">
+                <CompraItem @ref="mdl" item="@compraItem" FormAction="@Action" Refresh="@Refresh" />
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
-  public CompraDTO compra { get; set; } = new();
-  public ICollection<FornecedorDTO> ListaFornecedor { get; set; }
+    CompraItem mdl;
+    public CompraDTO compra { get; set; } = new();
+    public CompraItemDTO compraItem { get; set; } = new();
+    public string Action { get; set; }
+    public ICollection<FornecedorDTO> ListaFornecedor { get; set; }
 
-  [Parameter] public string id { get; set; }
+    [Parameter] public string id { get; set; }
 
-  protected override async Task OnInitializedAsync()
-  {
-    ListaFornecedor = await fornecedorApp.SelectAll();
-    compra = !string.IsNullOrEmpty(id) ? await compraApp.SelectById(Guid.Parse(id)) : compra;
-  }
-
-  private async Task EditarCompra()
-  {
-    GerenciadorGeral.domain.Entidades.Compra compraBD = new()
-      {
-        Id = compra.Id,
-        IdFornecedor = compra.IdFornecedor,
-        Data = compra.Data,
-        Desconto = 0,
-        ValorTotal = 0,
-        Observacao = compra.Observacao
-      };
-
-    if (string.IsNullOrEmpty(id))
+    protected override async Task OnInitializedAsync()
     {
-      compraBD.Id = Guid.NewGuid();
-      await compraApp.Insert(compraBD);
+        ListaFornecedor = await fornecedorApp.SelectAll();
+        compra = !string.IsNullOrEmpty(id) ? await compraApp.SelectById(Guid.Parse(id)) : compra;
     }
-    else
-      await compraApp.Update(compraBD);
 
-    navManager.NavigateTo("/Compra/Index");
-  }
+    private async Task EditarCompra()
+    {
+        GerenciadorGeral.domain.Entidades.Compra compraBD = new()
+            {
+                Id = compra.Id,
+                IdFornecedor = compra.IdFornecedor,
+                Data = compra.Data,
+                Desconto = 0,
+                ValorTotal = 0,
+                Observacao = compra.Observacao
+            };
+
+        if (string.IsNullOrEmpty(id))
+        {
+            compraBD.Id = Guid.NewGuid();
+            await compraApp.Insert(compraBD);
+        }
+        else
+            await compraApp.Update(compraBD);
+
+        navManager.NavigateTo("/Compra/Index");
+    }
+
+    public void AddNew()
+    {
+        compraItem = new CompraItemDTO();
+        Action = "A";
+    }
+
+    public void Refresh()
+    {
+        compraItem = new CompraItemDTO();
+        Action = "A";
+    }
 }
