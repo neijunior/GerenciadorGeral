@@ -25,8 +25,8 @@
       foreach (var item in listCompras)
       {
         <tr>
-          <td>@item.Data</td>
-          @* <td>@item.Fornecedor.RazaoSocial</td> *@
+          <td>@item.Data.ToString("dd/MM/yyyy")</td>
+          <td>@item.Fornecedor.RazaoSocial</td>
           <td>@item.ValorTotal.ToString()</td>
           <td>@item.Observacao</td>
           <td>
@@ -48,7 +48,7 @@
 
   private async Task<ICollection<CompraDTO>> PopularCompras()
   {
-    return await compraApp.SelectAll();
+    return await compraApp.Listar<GerenciadorGeral.domain.Entidades.Compra>(null, i => i.Fornecedor);
   }
 
   public async Task Delete(Guid Id)

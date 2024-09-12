@@ -7,118 +7,144 @@
 @rendermode InteractiveAuto
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header">Criar Compra</div>
-                <div class="card-body">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">Criar Compra</div>
+        <div class="card-body">
 
-                    <EditForm Model="compra" OnValidSubmit="EditarCompra" FormName="frmCompra">
+          <EditForm Model="compra" OnValidSubmit="EditarCompra" FormName="frmCompra">
 
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-                        <div class="form-group mb-3">
-                            <label for="Fornecedor">Fornecedor</label>
-                            <InputSelect id="CompraPai" @bind-Value="compra.IdFornecedor">
-                                <option value="" class="dropdown-item">Selecione</option>
-                                @foreach (var item in ListaFornecedor)
-                                {
-                                    <option value="@item.Id">@item.RazaoSocial</option>
-                                }
-                            </InputSelect>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="form-label">Data</label>
-                            <InputDate @bind-Value="compra.Data" class="form-control"></InputDate>
-                            @* <ValidationMessage For="()=>CompraModel.Titulo"></ValidationMessage> *@
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="form-label">Valor Total</label>
-                            <InputNumber @bind-Value="compra.ValorTotal" class="form-control"></InputNumber>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="form-label">Observação</label>
-                            <InputText @bind-Value="compra.Observacao" class="form-control"></InputText>
-                        </div>
-
-                        @* <div class="form-group mb-3">
-                        <label class="form-label">Ordem</label>
-                        <InputText @bind-Value="CompraModel.Ordem" class="form-control"></InputText>
-                        </div> *@
-
-                        <button type="submit" class="btn btn-success">Salvar</button>
-                    </EditForm>
-                </div>
+            <div class="form-group mb-3">
+              <label for="Fornecedor">Fornecedor</label>
+              <InputSelect id="CompraPai" @bind-Value="compra.IdFornecedor">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaFornecedor)
+                {
+                  <option value="@item.Id">@item.RazaoSocial</option>
+                }
+              </InputSelect>
             </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Data</label>
+              <InputDate @bind-Value="compra.Data" class="form-control"></InputDate>
+              @* <ValidationMessage For="()=>CompraModel.Titulo"></ValidationMessage> *@
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Valor Total</label>
+              <InputNumber @bind-Value="compra.ValorTotal" class="form-control"></InputNumber>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Observação</label>
+              <InputText @bind-Value="compra.Observacao" class="form-control"></InputText>
+            </div>
+
+            @* <div class="form-group mb-3">
+            <label class="form-label">Ordem</label>
+            <InputText @bind-Value="CompraModel.Ordem" class="form-control"></InputText>
+            </div> *@
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </EditForm>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<button type="button" class="btn btn-labeled btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem"
-        @onclick="@(() => AddNew())">
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
 </button>
 
-<div id="modalItem" class="modal fade" role="none" data-bs-backdrop="static">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content" style="background-color: transparent; border:black">
-            <div class="modal-body my-0 p-0">
-                <CompraItem @ref="mdl" item="@compraItem" FormAction="@Action" Refresh="@Refresh" />
-            </div>
-        </div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
     </div>
+  </div>
 </div>
 
+@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem">
+         @onclick="@(() => AddNew())"> Exibir modal 
+        Exibir modal
+</button>
+
+<div id="modalItem" class="modal fade" data-bs-backdrop="static">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content" style="background-color: transparent; border:black">
+      <div class="modal-body my-0 p-0">
+        teste
+        <CompraItem @ref="mdl" item="@compraItem" FormAction="@Action" Refresh="@Refresh" />
+      </div>
+    </div>
+  </div>
+</div> *@
+
 @code {
-    CompraItem mdl;
-    public CompraDTO compra { get; set; } = new();
-    public CompraItemDTO compraItem { get; set; } = new();
-    public string Action { get; set; }
-    public ICollection<FornecedorDTO> ListaFornecedor { get; set; }
+  CompraItem mdl;
+  public CompraDTO compra { get; set; } = new();
+  public CompraItemDTO compraItem { get; set; } = new();
+  public string Action { get; set; }
+  public ICollection<FornecedorDTO> ListaFornecedor { get; set; }
 
-    [Parameter] public string id { get; set; }
+  [Parameter] public string id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
+  {
+    ListaFornecedor = await fornecedorApp.SelectAll();
+    compra = !string.IsNullOrEmpty(id) ? await compraApp.SelectById(Guid.Parse(id)) : compra;
+  }
+
+  private async Task EditarCompra()
+  {
+    GerenciadorGeral.domain.Entidades.Compra compraBD = new()
+      {
+        Id = compra.Id,
+        IdFornecedor = compra.IdFornecedor,
+        Data = compra.Data,
+        Desconto = 0,
+        ValorTotal = 0,
+        Observacao = compra.Observacao
+      };
+
+    if (string.IsNullOrEmpty(id))
     {
-        ListaFornecedor = await fornecedorApp.SelectAll();
-        compra = !string.IsNullOrEmpty(id) ? await compraApp.SelectById(Guid.Parse(id)) : compra;
+      compraBD.Id = Guid.NewGuid();
+      await compraApp.Insert(compraBD);
     }
+    else
+      await compraApp.Update(compraBD);
 
-    private async Task EditarCompra()
-    {
-        GerenciadorGeral.domain.Entidades.Compra compraBD = new()
-            {
-                Id = compra.Id,
-                IdFornecedor = compra.IdFornecedor,
-                Data = compra.Data,
-                Desconto = 0,
-                ValorTotal = 0,
-                Observacao = compra.Observacao
-            };
+    navManager.NavigateTo("/Compra/Index");
+  }
 
-        if (string.IsNullOrEmpty(id))
-        {
-            compraBD.Id = Guid.NewGuid();
-            await compraApp.Insert(compraBD);
-        }
-        else
-            await compraApp.Update(compraBD);
+  public void AddNew()
+  {
+    compraItem = new CompraItemDTO();
+    Action = "A";
+  }
 
-        navManager.NavigateTo("/Compra/Index");
-    }
-
-    public void AddNew()
-    {
-        compraItem = new CompraItemDTO();
-        Action = "A";
-    }
-
-    public void Refresh()
-    {
-        compraItem = new CompraItemDTO();
-        Action = "A";
-    }
+  public void Refresh()
+  {
+    compraItem = new CompraItemDTO();
+    Action = "A";
+  }
 }

@@ -56,5 +56,18 @@ namespace GerenciadorGeral.application.Servicos
     {
       await _servicoBase.Update(_iMapperBase.Map<TEntity>(entity));
     }
+
+    public async Task<ICollection<TEntidadeDTO>> Listar<TEntity>(Func<TEntity, bool> where = default, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    {
+      var lista = _iMapperBase.Map<ICollection<TEntidadeDTO>>(await _servicoBase.Listar(where, includes));
+      return lista;
+    }
+
+    public async Task<ICollection<R>> Listar<TEntity, R>(Func<TEntity, bool> where, Func<TEntity, R> select = default, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    {
+      //var lista = _iMapperBase.Map<ICollection<TEntidadeDTO>>(await _servicoBase.Listar(where, select, includes));
+      //return lista;
+      return null;
+    }
   }
 }

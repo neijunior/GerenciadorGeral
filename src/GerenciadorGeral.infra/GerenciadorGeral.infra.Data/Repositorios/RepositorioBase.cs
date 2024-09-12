@@ -2,6 +2,7 @@
 using GerenciadorGeral.domain.Interfaces.Repositorios;
 using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace GerenciadorGeral.infra.Data.Repositorios
@@ -79,6 +80,44 @@ namespace GerenciadorGeral.infra.Data.Repositorios
       catch (Exception ex)
       {
 
+        throw ex;
+      }
+    }
+
+    public async Task<ICollection<TEntity>> Listar<TEntity>(Func<TEntity, bool> where = default, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    {
+      try
+      {
+        IQueryable<TEntity> query = _contexto.Set<TEntity>();
+        foreach (Expression<Func<TEntity, object>> inc in includes)
+          query = query.Include(inc);
+
+        if (where != null)
+        {
+          return query.Where(where).ToList();
+        }
+        return query.ToList<TEntity>();
+      }
+      catch (Exception ex)
+      {
+        throw ex;
+      }
+    }
+
+    public async Task<ICollection<R>> Listar<TEntity, R>(Func<TEntity, bool> where, Func<TEntity, R> select = default, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    {
+      try
+      {
+        IQueryable<TEntity> query = _contexto.Set<TEntity>();
+        foreach (Expression<Func<TEntity, object>> inc in includes)
+          query = query.Include(inc);
+
+        if (where != null)
+          return query.Where(where).Select(select).ToList<R>();
+        return query.Select(select).ToList<R>();
+      }
+      catch (Exception ex)
+      {
         throw ex;
       }
     }

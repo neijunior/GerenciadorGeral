@@ -46,5 +46,15 @@ namespace GerenciadorGeral.domain.Servicos
     {
       await _repositorio.Update(entity);
     }
+
+    public async Task<ICollection<TEntity>> Listar<TEntity>(Func<TEntity, bool> where = default, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    {
+      return await _repositorio.Listar(where, includes);
+    }
+
+    //public async Task<ICollection<R>> Listar<TEntity, R>(Func<TEntity, bool> where, Func<TEntity, R> select = default, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    //{
+      //return await _repositorio.Listar(where, select, includes);
+    //}
   }
 }
