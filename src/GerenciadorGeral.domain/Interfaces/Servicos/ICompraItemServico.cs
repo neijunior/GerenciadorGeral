@@ -2,8 +2,7 @@
 
 namespace GerenciadorGeral.domain.Interfaces.Servicos
 {
-  public interface ICompraServico  : IServicoBase<Compra>
-  {
-    Task<Compra> Consultar(Guid Id);
-  }
+    public interface ICompraItemServico : IServicoBase<CompraItem>
+    {
+    }
 }

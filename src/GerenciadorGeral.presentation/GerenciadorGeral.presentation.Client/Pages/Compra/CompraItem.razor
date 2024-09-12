@@ -1,31 +1,118 @@
 ﻿@using GerenciadorGeral.application.DTO
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.IUnidadeMedidaApp unidadeMedidaApp;
+@inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
+@inject GerenciadorGeral.application.Interfaces.ICompraItemApp compraItemApp;
+@rendermode InteractiveAuto
 
-@* <div class="modal-body">
-    <div class="card-footer">
-        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">X</button>
+
+<EditForm Model="item" OnValidSubmit="EditarItem" FormName="frmCompraItem" >
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
     </div>
-</div> *@
+    <div class="modal-body">
+        <div class="form-group mb-3">
+            <label for="Fornecedor">SKU</label>
+            <InputSelect id="IdSku" @bind-Value="item.IdSku" class="form-control selectpicker">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var sku in ListaSkus)
+                {
+                    <option value="@sku.Id">@sku.Nome</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-group mb-3">
+            <label for="Fornecedor">Unidade Medida</label>
+            <InputSelect id="CompraPai" @bind-Value="item.UnidadeMedida" class="form-control selectpicker">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var un in ListaUnidadeMedida)
+                {
+                    <option value="@un.Codigo">@un.Codigo - @un.Descricao</option>
+                }
+            </InputSelect>
+        </div>
 
-<div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Adicionar item</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-</div>
-<div class="modal-body">
-    ...
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-    <button type="button" class="btn btn-primary">Salvar</button>
-</div>
+        <div class="form-group mb-3">
+            <label class="form-label">Quantidade Por Unidade Medida</label>
+            <InputNumber @bind-Value="item.QuantidadePorUnidadeMedida" class="form-control"></InputNumber>
+        </div>
 
+        <div class="form-group mb-3">
+            <label class="form-label">Quantidade Por Unidade Medida Total</label>
+            <InputNumber @bind-Value="item.QuantidadePorUnidadeMedidaTotal" class="form-control"></InputNumber>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Quantidade Por Unidade Medida Total</label>
+            <InputNumber @bind-Value="item.ValorUnitario" class="form-control"></InputNumber>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Quantidade Por Unidade Medida Total</label>
+            <InputNumber @bind-Value="item.Quantidade" class="form-control"></InputNumber>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Quantidade Por Unidade Medida Total</label>
+            <InputNumber @bind-Value="item.Desconto" class="form-control"></InputNumber>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Quantidade Por Unidade Medida Total</label>
+            <InputNumber TValue="decimal" @bind-Value="item.ValorTotal" class="form-control decimal" placeholder="0,00"></InputNumber>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</EditForm>
 
 @code {
     [Parameter] public CompraItemDTO item { get; set; }
     [Parameter] public string FormAction { get; set; }
     [Parameter] public EventCallback Refresh { get; set; }
 
-    protected override void OnInitialized()
+    public ICollection<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; }
+    public ICollection<SKUDTO> ListaSkus { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
+        ListaUnidadeMedida = await unidadeMedidaApp.SelectAll();
+        ListaSkus = await skuApp.SelectAll();
+        if (item == null)
+            item = new CompraItemDTO();
+
         base.OnInitialized();
+    }
+
+    private async Task EditarItem()
+    {
+        GerenciadorGeral.domain.Entidades.CompraItem compraItemBD = new()
+            {
+                Id = item.Id,
+                IdCompra = item.IdCompra,
+                IdSku = item.IdSku,
+                UnidadeMedida = item.UnidadeMedida,
+                QuantidadePorUnidadeMedida = item.QuantidadePorUnidadeMedida,
+                QuantidadePorUnidadeMedidaTotal = item.QuantidadePorUnidadeMedidaTotal,
+                ValorUnitario = item.ValorUnitario,
+                Quantidade = item.Quantidade,
+                Desconto = item.Desconto,
+                ValorTotal = item.ValorTotal
+            };
+
+        if (FormAction == "A")
+        {
+            compraItemBD.Id = Guid.NewGuid();
+            await compraItemApp.Insert(compraItemBD);
+        }
+        else
+            await compraItemApp.Update(compraItemBD);
+
+        navManager.NavigateTo($"/Compra/Editar/{item.IdCompra}");
     }
 }

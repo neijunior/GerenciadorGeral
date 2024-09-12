@@ -9,7 +9,7 @@ namespace GerenciadorGeral.application.DTO
         public decimal ValorTotal { get; set; }
         public DateTime Data { get; set; }
         public string? Observacao { get; set; }
-        //public virtual ICollection<CompraItem> ListaItens { get; set; }
+        public ICollection<CompraItemDTO> ListaItens { get; set; }
         public FornecedorDTO Fornecedor { get; set; }
     }
 }
