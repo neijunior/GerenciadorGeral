@@ -25,5 +25,11 @@ namespace GerenciadorGeral.application.Servicos
       return this._iMapper.Map<CompraDTO>(item);  
 
     }
+
+    public async Task<ICollection<CompraDTO>> Listar()
+    {
+      var itens = await this._servico.Listar<Compra>(null, i => i.Fornecedor);
+      return this._iMapper.Map<ICollection<CompraDTO>>(itens);
+    }
   }
 }

@@ -6,5 +6,6 @@ namespace GerenciadorGeral.application.Interfaces
   public interface ICompraApp : IAppBase<Compra, CompraDTO>
   {
     Task<CompraDTO> Consultar (Guid Id);
+    Task<ICollection<CompraDTO>> Listar();
   }
 }

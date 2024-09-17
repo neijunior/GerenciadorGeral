@@ -20,7 +20,6 @@ namespace GerenciadorGeral.domain.Servicos
 
       compra.ListaItens = itens;
 
-
       return compra;
     }
   }

@@ -72,9 +72,9 @@
                       <td>@item.ValorUnitario.ToString()</td>
                       <td>@item.Quantidade.ToString()</td>
                       <td>@item.Desconto.ToString()</td>
-                      <td>@item.ValorTotal.ToString()</td>                      
+                      <td>@item.ValorTotal.ToString()</td>
                       <td>
-                        <a href="/Compra/CompraItem/@item.Id" class="btn btn-primary">Editar</a>
+                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem"  @onclick="async () => EditarItem(item)">Editar</a>
                         <button class="btn btn-danger" @onclick="async () => ExcluirItem(item.Id)">Excluir</button>
                       </td>
                     </tr>
@@ -83,7 +83,7 @@
               </table>
             }
             <button type="submit" class="btn btn-success">Salvar</button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem" @onclick="@(() => AddNew())">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem" @onclick="@(() => AdicionarItem())">
               Adicionar Item
             </button>
           </EditForm>
@@ -105,7 +105,7 @@
 
 
 @code {
-  CompraItem mdl = null;
+  CompraItem mdl;
   public CompraDTO compra { get; set; } = new();
   public CompraItemDTO compraItem { get; set; } = new();
   public string Action { get; set; }
@@ -142,18 +142,31 @@
     navManager.NavigateTo("/Compra/Index");
   }
 
-  public void AddNew()
+  public void AdicionarItem()
   {
-    compraItem = new CompraItemDTO();
-    mdl = new CompraItem();    
+    compraItem = new();
     compraItem.IdCompra = compra.Id;
     Action = "A";
   }
 
+  public void EditarItem(CompraItemDTO i)
+  {
+    compraItem = i;
+    Action = "U";
+  }
+
   public void Refresh()
   {
-    compraItem = new CompraItemDTO();
-    Action = "A";
+    switch (Action)
+    {
+      case "A":
+        break;
+      case "U":
+        break;
+      default:
+        break;
+    }
+    
   }
 
   public async Task ExcluirItem(Guid Id)
