@@ -3,11 +3,7 @@
   public class CompraItemDTO : BaseDTO
   {
     public Guid IdCompra { get; set; }
-
-    public Guid IdSku { get; set; }
-    public string UnidadeMedida { get; set; }
-    public decimal QuantidadePorUnidadeMedida { get; set; }
-    public decimal QuantidadePorUnidadeMedidaTotal { get; set; }
+    public Guid IdSku { get; set; }    
     public decimal ValorUnitario { get; set; }
     public decimal Quantidade { get; set; }
     public decimal Desconto { get; set; }

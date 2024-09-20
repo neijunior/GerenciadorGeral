@@ -23,27 +23,7 @@
           <option value="@sku.Id">@sku.Nome</option>
         }
       </InputSelect>
-    </div>
-    <div class="form-group mb-3">
-      <label for="Fornecedor">Unidade Medida</label>
-      <InputSelect id="CompraPai" @bind-Value="item.UnidadeMedida" class="form-control selectpicker">
-        <option value="" class="dropdown-item">Selecione</option>
-        @foreach (var un in ListaUnidadeMedida)
-        {
-          <option value="@un.Codigo">@un.Codigo - @un.Descricao</option>
-        }
-      </InputSelect>
-    </div>
-
-    <div class="form-group mb-3">
-      <label class="form-label">Quantidade Por Unidade Medida</label>
-      <InputNumber @bind-Value="item.QuantidadePorUnidadeMedida" class="form-control"></InputNumber>
-    </div>
-
-    <div class="form-group mb-3">
-      <label class="form-label">Quantidade Por Unidade Medida Total</label>
-      <InputNumber @bind-Value="item.QuantidadePorUnidadeMedidaTotal" class="form-control"></InputNumber>
-    </div>
+    </div>    
     <div class="form-group mb-3">
       <label class="form-label">Valor Unitário</label>
       <InputNumber @bind-Value="item.ValorUnitario" class="form-control"></InputNumber>
@@ -101,10 +81,7 @@
       {
         Id = item.Id,
         IdCompra = item.IdCompra,
-        IdSku = item.IdSku,
-        UnidadeMedida = item.UnidadeMedida,
-        QuantidadePorUnidadeMedida = item.QuantidadePorUnidadeMedida,
-        QuantidadePorUnidadeMedidaTotal = item.QuantidadePorUnidadeMedidaTotal,
+        IdSku = item.IdSku,        
         ValorUnitario = item.ValorUnitario,
         Quantidade = item.Quantidade,
         Desconto = item.Desconto,
