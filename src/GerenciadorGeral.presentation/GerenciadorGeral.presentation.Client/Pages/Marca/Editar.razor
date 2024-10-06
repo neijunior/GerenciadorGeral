@@ -1,0 +1,60 @@
+﻿@page "/Marca/Editar/{id?}"
+
+@using GerenciadorGeral.domain.Entidades;
+@using Formatacao;
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.IMarcaApp marcaApp;
+@rendermode InteractiveAuto
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">Criar Marca</div>
+        <div class="card-body">
+
+          <EditForm Model="marcaModel" OnValidSubmit="EditarMarca" FormName="Marca">
+
+            <div class="form-group mb-3">
+              <label class="form-label">Nome</label>
+              <InputText @bind-Value="marcaModel.Nome" class="form-control"></InputText>              
+            </div>
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </EditForm>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+
+  public Marca marcaModel { get; set; } = new();
+
+  [Parameter] public string id { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    marcaModel = !string.IsNullOrEmpty(id) ? await marcaApp.Consultar(Guid.Parse(id)) : marcaModel;
+  }
+
+  private async Task EditarMarca()
+  {
+    Marca marcaBD = new()
+      {
+        Id = marcaModel.Id,
+        Nome = marcaModel.Nome
+      };
+
+    if (string.IsNullOrEmpty(id))
+    {
+      marcaBD.Id = Guid.NewGuid();
+      await marcaApp.Salvar(marcaBD);
+    }
+    else
+      await marcaApp.Editar(marcaBD);
+
+    navManager.NavigateTo("/Marca/Index");
+  }
+}

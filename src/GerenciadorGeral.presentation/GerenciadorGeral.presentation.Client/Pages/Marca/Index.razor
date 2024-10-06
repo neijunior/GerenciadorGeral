@@ -1,0 +1,63 @@
+﻿@page "/Marca/Index"
+
+@using GerenciadorGeral.domain.Entidades;
+@using Formatacao
+@inject IJSRuntime JSRuntime;
+@inject GerenciadorGeral.application.Interfaces.IMarcaApp marcaApp;
+@rendermode InteractiveAuto
+
+<h3>Fornecedor</h3>
+
+<a href="/Marca/Editar" class="btn btn-sucess">Criar</a>
+
+<table class="table table-responsive table-striped">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (listaMarcas != null && listaMarcas.Count() > 0)
+    {
+      foreach (var item in listaMarcas)
+      {
+        <tr>
+          <td>@item.Nome</td>
+          <td>
+            <a href="/Marca/Editar/@item.Id" class="btn btn-primary">Editar</a>
+            <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>
+
+@code {
+  ICollection<Marca> listaMarcas = new HashSet<Marca>();
+  protected override async Task OnInitializedAsync()
+  {
+    listaMarcas = await PopularMarcas();
+  }
+
+  private async Task<ICollection<Marca>> PopularMarcas()
+  {
+    return await marcaApp.Listar();
+  }
+
+  public async Task Delete(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir a Marca?");
+    if (!confirma)
+      return;
+
+    var marca = await marcaApp.Consultar(Id);
+
+    await marcaApp.Excluir(Id);
+
+    listaMarcas = await PopularMarcas();
+
+    StateHasChanged();
+  }
+}
