@@ -1,9 +1,12 @@
 ﻿@page "/Sku/Editar/{id?}"
 
 @using GerenciadorGeral.application.DTO
+@using GerenciadorGeral.domain.Entidades
+@using Formatacao;
 @inject NavigationManager navManager;
 @inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
 @inject GerenciadorGeral.application.Interfaces.IUnidadeMedidaApp unidadeMedidaApp;
+@inject GerenciadorGeral.application.Interfaces.IMarcaApp marcaApp;
 @rendermode InteractiveAuto
 
 <div class="container">
@@ -19,6 +22,11 @@
             <ValidationSummary />
 
             <div class="form-group mb-3">
+              <label class="form-label">Código</label>
+              <InputText @bind-Value="skuModel.Codigo" class="form-control" disable></InputText>              
+            </div>
+
+            <div class="form-group mb-3">
               <label class="form-label">Nome</label>
               <InputText @bind-Value="skuModel.Nome" class="form-control"></InputText>
               <ValidationMessage For="()=>skuModel.Nome"></ValidationMessage>
@@ -26,16 +34,33 @@
 
             <div class="form-group mb-3">
               <label for="skuUnidadeMedida">Unidade Medida</label>
-              <InputSelect id="skuUnidadeMedida" @bind-Value="skuModel.UnidadeMedida">
+              <InputSelect id="skuUnidadeMedida" @bind-Value="skuModel.CodigoUnidadeMedida">
                 <option value="" class="dropdown-item">Selecione</option>
                 @foreach (var item in ListaUnidadeMedida)
                 {
                   <option value="@item.Codigo">@item.Descricao</option>
                 }
               </InputSelect>
-              <ValidationMessage For="()=>skuModel.UnidadeMedida"></ValidationMessage>
+              <ValidationMessage For="()=>skuModel.CodigoUnidadeMedida"></ValidationMessage>
             </div>
 
+            <div class="form-group mb-3">
+              <label class="form-label">Nome</label>
+              <InputNumber @bind-Value="skuModel.Quantidade" class="form-control"></InputNumber>
+              <ValidationMessage For="()=>skuModel.Quantidade"></ValidationMessage>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="skuIdMarca">Marca</label>
+              <InputSelect id="skuIdMarca" @bind-Value="skuModel.IdMarca">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaMarcas)
+                {
+                  <option value="@item.Id">@item.Nome</option>
+                }
+              </InputSelect>
+              <ValidationMessage For="()=>skuModel.IdMarca"></ValidationMessage>
+            </div>
 
             <button type="submit" class="btn btn-success">Salvar</button>
           </EditForm>
@@ -49,24 +74,29 @@
 
   public SKUDTO skuModel { get; set; } = new();
   public ICollection<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; }
+  public ICollection<Marca> ListaMarcas { get; set; }
 
   [Parameter] public string id { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
+    ListaMarcas = await marcaApp.Listar();
     ListaUnidadeMedida = await unidadeMedidaApp.SelectAll();
     skuModel = !string.IsNullOrEmpty(id) ? await skuApp.SelectById(Guid.Parse(id)) : skuModel;
   }
 
   private async Task EditarSku()
   {
+    var marca = await marcaApp.Consultar(skuModel.IdMarca);
+    string Codigo = $"{skuModel.Nome.Left(3)}-{(int)skuModel.Quantidade}{skuModel.CodigoUnidadeMedida}-{marca.Nome.Left(3)}";
     GerenciadorGeral.domain.Entidades.SKU skuBD = new()
       {
         Id = skuModel.Id,
+        Codigo = Codigo.ToUpper(),
         Nome = skuModel.Nome,
-        UnidadeMedida = skuModel.UnidadeMedida,
-        Descricao = skuModel.Descricao,
-        Quantidade = skuModel.Quantidade
+        CodigoUnidadeMedida = skuModel.CodigoUnidadeMedida,        
+        Quantidade = skuModel.Quantidade,
+        IdMarca = skuModel.IdMarca
       };
 
     if (string.IsNullOrEmpty(id))

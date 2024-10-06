@@ -10,61 +10,69 @@
 <a href="/SKU/Editar" class="btn btn-sucess">Criar</a>
 
 <table class="table table-responsive table-striped">
-    <thead>
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Nome</th>
+      <th>Marca</th>
+      <th>Unidade de Medida</th>
+      <th>Quantidade</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (listSkus != null && listSkus.Count() > 0)
+    {
+      foreach (var sku in listSkus)
+      {
         <tr>
-            <th>Nome</th>
-            <th>Unidade de Medida</th>
-            <th>Ações</th>            
+          <td>@sku.Codigo</td>
+          <td>@sku.Nome</td>
+          <td>@sku.NomeMarca</td>
+          <td>@sku.CodigoUnidadeMedida</td>
+          <td>@sku.Quantidade.ToString()</td>
+          <td>
+            <a href="/Sku/Editar/@sku.Id" class="btn btn-primary">Editar</a>
+            <button class="btn btn-danger" @onclick="async () => Delete(sku.Id)">Excluir</button>
+          </td>
         </tr>
-    </thead>
-    <tbody>
-        @if (listSkus != null && listSkus.Count() > 0)
-        {
-            foreach (var sku in listSkus)
-            {
-                <tr>
-                    <td>@sku.Nome</td>
-                    <td>@sku.UnidadeMedida</td>
-                    <td>
-                        <a href="/Sku/Editar/@sku.Id" class="btn btn-primary">Editar</a>
-                        <button class="btn btn-danger" @onclick="async () => Delete(sku.Id)">Excluir</button>
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
+      }
+    }
+  </tbody>
 </table>
 
 @code {
-    List<SKUDTO> listSkus = new();
-    protected override async Task OnInitializedAsync()
-    {
-        listSkus = await PopularSkus();
-    }
+  List<SKUDTO> listSkus = new();
+  protected override async Task OnInitializedAsync()
+  {
+    listSkus = await PopularSkus();
+  }
 
-    private async Task<List<SKUDTO>> PopularSkus()
-    {
-        var lista = await skuApp.SelectAll();
-        return lista.Select(x => new SKUDTO
-            {
-                Id = x.Id,
-                Nome = x.Nome,
-                UnidadeMedida = x.UnidadeMedida
-            }).ToList();
-    }
+  private async Task<List<SKUDTO>> PopularSkus()
+  {
+    var lista = await skuApp.Listar<GerenciadorGeral.domain.Entidades.SKU>(null, i => i.Marca);
+    return lista.Select(x => new SKUDTO
+      {
+        Id = x.Id,
+        Codigo = x.Codigo,
+        Nome = x.Nome,
+        CodigoUnidadeMedida = x.CodigoUnidadeMedida,
+        Quantidade = x.Quantidade
+      }).ToList();
+  }
 
-    public async Task Delete(Guid Id)
-    {
-        bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o sku?");
-        if (!confirma)
-            return;
+  public async Task Delete(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o sku?");
+    if (!confirma)
+      return;
 
-        var sku = await skuApp.SelectById(Id);
+    var sku = await skuApp.SelectById(Id);
 
-        await skuApp.Delete(sku.Id);
+    await skuApp.Delete(sku.Id);
 
-        listSkus = await PopularSkus();
+    listSkus = await PopularSkus();
 
-        StateHasChanged();
-    }
+    StateHasChanged();
+  }
 }

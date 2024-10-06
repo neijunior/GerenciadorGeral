@@ -24,7 +24,7 @@
             {
                 <tr>
                     <td>@sku.Nome</td>
-                    <td>@sku.UnidadeMedida</td>
+                    <td>@sku.CodigoUnidadeMedida</td>
                     <td>
                         <a href="/Sku/Editar/@sku.Id" class="btn btn-primary">Editar</a>
                         <button class="btn btn-danger" @onclick="async () => Delete(sku.Id)">Excluir</button>
@@ -49,7 +49,7 @@
             {
                 Id = x.Id,
                 Nome = x.Nome,
-                UnidadeMedida = x.UnidadeMedida
+                CodigoUnidadeMedida = x.CodigoUnidadeMedida
             }).ToList();
     }
 

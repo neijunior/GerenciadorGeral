@@ -15,6 +15,7 @@ namespace GerenciadorGeral.infra.IoC
       svcCollection.AddScoped<IMenuRepositorio, MenuRepositorio>();
       svcCollection.AddScoped<ISKURepositorio, SKURepositorio>();
       svcCollection.AddScoped<IUnidadeMedidaRepositorio, UnidadeMedidaRepositorio>();
+      svcCollection.AddScoped<IMarcaRepositorio, MarcaRepositorio>();
     }
 
   }
