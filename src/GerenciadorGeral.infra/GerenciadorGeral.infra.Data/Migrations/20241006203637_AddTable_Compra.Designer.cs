@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20241006203637_AddTable_Compra")]
+    partial class AddTable_Compra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,40 +53,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.HasIndex("IdFornecedor");
 
                     b.ToTable("Compra", "dbo");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CompraItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<decimal>("Desconto")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<Guid>("IdCompra")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdSku")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Quantidade")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("ValorTotal")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("ValorUnitario")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdCompra");
-
-                    b.HasIndex("IdSku");
-
-                    b.ToTable("CompraItem", "dbo");
                 });
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Fornecedor", b =>
@@ -253,25 +222,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.Navigation("Fornecedor");
                 });
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CompraItem", b =>
-                {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.Compra", "Compra")
-                        .WithMany("ListaItens")
-                        .HasForeignKey("IdCompra")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GerenciadorGeral.domain.Entidades.SKU", "SKU")
-                        .WithMany("ListaItens")
-                        .HasForeignKey("IdSku")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Compra");
-
-                    b.Navigation("SKU");
-                });
-
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
                 {
                     b.HasOne("GerenciadorGeral.domain.Entidades.UnidadeMedida", "UnidadeMedida")
@@ -291,11 +241,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.Navigation("UnidadeMedida");
                 });
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Compra", b =>
-                {
-                    b.Navigation("ListaItens");
-                });
-
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Fornecedor", b =>
                 {
                     b.Navigation("Compras");
@@ -304,11 +249,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Marca", b =>
                 {
                     b.Navigation("SKUs");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
-                {
-                    b.Navigation("ListaItens");
                 });
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.UnidadeMedida", b =>

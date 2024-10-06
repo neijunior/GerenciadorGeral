@@ -11,6 +11,6 @@ namespace GerenciadorGeral.domain.Entidades
     public string CpfCnpj { get; set; }
     public string RazaoSocial { get; set; }
     public Guid? IdEndereco { get; set; }
-    //public virtual ICollection<Compra> Compras { get; set; }
+    public virtual ICollection<Compra> Compras { get; set; }
   }
 }

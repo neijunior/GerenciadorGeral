@@ -7,7 +7,7 @@
     public string CodigoUnidadeMedida { get; set; }
     public decimal Quantidade { get; set; }
     public Guid IdMarca { get; set; }
-    //public virtual ICollection<CompraItem> ListaItens { get; set; }
+    public virtual ICollection<CompraItem> ListaItens { get; set; }
     public virtual UnidadeMedida? UnidadeMedida { get; set; }
     public virtual Marca? Marca { get; set; }
     
