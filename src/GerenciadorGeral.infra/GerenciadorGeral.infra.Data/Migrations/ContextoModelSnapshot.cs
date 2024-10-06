@@ -23,79 +23,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Compra", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<DateTime>("Data")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Desconto")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<Guid>("IdFornecedor")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Observacao")
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<decimal>("ValorTotal")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdFornecedor");
-
-                    b.ToTable("Compra", "dbo");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CompraItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<decimal>("Desconto")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<Guid>("IdCompra")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdSku")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Quantidade")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("QuantidadePorUnidadeMedida")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("QuantidadePorUnidadeMedidaTotal")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<string>("UnidadeMedida")
-                        .IsRequired()
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<decimal>("ValorTotal")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("ValorUnitario")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdCompra");
-
-                    b.HasIndex("IdSku");
-
-                    b.ToTable("CompraItem", "dbo");
-                });
-
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Fornecedor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -119,6 +46,21 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fornecedor", "dbo");
+                });
+
+            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Marca", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Marca", "dbo");
                 });
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Menu", b =>
@@ -161,19 +103,33 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Id");
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("CodigoUnidadeMedida")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("varchar")
+                        .HasColumnName("CodigoUnidadeMedida");
+
+                    b.Property<Guid>("IdMarca")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar")
                         .HasColumnName("Nome");
 
-                    b.Property<string>("UnidadeMedida")
-                        .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("varchar")
-                        .HasColumnName("UnidadeMedida");
+                    b.Property<decimal>("Quantidade")
+                        .HasColumnType("decimal(16,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CodigoUnidadeMedida");
+
+                    b.HasIndex("IdMarca");
 
                     b.ToTable("SKU", "dbo");
                 });
@@ -223,49 +179,33 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Compra", b =>
-                {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.Fornecedor", "Fornecedor")
-                        .WithMany("Compras")
-                        .HasForeignKey("IdFornecedor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Fornecedor");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CompraItem", b =>
-                {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.Compra", "Compra")
-                        .WithMany("ListaItens")
-                        .HasForeignKey("IdCompra")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GerenciadorGeral.domain.Entidades.SKU", "SKU")
-                        .WithMany("ListaItens")
-                        .HasForeignKey("IdSku")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Compra");
-
-                    b.Navigation("SKU");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Compra", b =>
-                {
-                    b.Navigation("ListaItens");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Fornecedor", b =>
-                {
-                    b.Navigation("Compras");
-                });
-
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
                 {
-                    b.Navigation("ListaItens");
+                    b.HasOne("GerenciadorGeral.domain.Entidades.UnidadeMedida", "UnidadeMedida")
+                        .WithMany("SKUs")
+                        .HasForeignKey("CodigoUnidadeMedida")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GerenciadorGeral.domain.Entidades.Marca", "Marca")
+                        .WithMany("SKUs")
+                        .HasForeignKey("IdMarca")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Marca");
+
+                    b.Navigation("UnidadeMedida");
+                });
+
+            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Marca", b =>
+                {
+                    b.Navigation("SKUs");
+                });
+
+            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.UnidadeMedida", b =>
+                {
+                    b.Navigation("SKUs");
                 });
 #pragma warning restore 612, 618
         }

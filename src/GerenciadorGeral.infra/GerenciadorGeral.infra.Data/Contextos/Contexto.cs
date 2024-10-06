@@ -1,18 +1,19 @@
 ﻿using GerenciadorGeral.domain.Entidades;
-using GerenciadorGeral.infra.Data.Mapeamentos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Logging;
 
 namespace GerenciadorGeral.infra.Data.Contextos
 {
   public class Contexto : DbContext
   {
+    public DbSet<Fornecedor> Fornecedor { get; set; }
+    public DbSet<Marca> Marca { get; set; }
+    public DbSet<Menu> Menu { get; set; }
     public DbSet<SKU> SKU { get; set; }
     public DbSet<UnidadeMedida> UnidadeMedida { get; set; }
-    public DbSet<Fornecedor> Fornecedor { get; set; }
-    public DbSet<Compra> Compra { get; set; }
-    public DbSet<Menu> Menu { get; set; }
+    
+    //public DbSet<Compra> Compra { get; set; }
+    
     public IDbContextTransaction Transaction { get; private set; }
     public Contexto(DbContextOptions<Contexto> options) : base(options)
     {
@@ -89,7 +90,6 @@ namespace GerenciadorGeral.infra.Data.Contextos
         //    break;
         //}
       }
-      //modelBuilder.ApplyConfiguration(new UnidadeMedidaMap<UnidadeMedida>());
 
       modelBuilder.ApplyConfigurationsFromAssembly(typeof(Contexto).Assembly);
 
