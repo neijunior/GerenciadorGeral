@@ -10,6 +10,7 @@ namespace GerenciadorGeral.infra.IoC
         {
             svcCollection.AddScoped(typeof(IAppBase<,>), typeof(AppBase<,>));
             svcCollection.AddScoped<ICompraApp, CompraApp>();
+            svcCollection.AddScoped<ICompraItemApp, CompraItemApp>();
             svcCollection.AddScoped<IFornecedorApp, FornecedorApp>();
             svcCollection.AddScoped<IMenuApp, MenuApp>();
             svcCollection.AddScoped<ISKUApp, SKUApp>();

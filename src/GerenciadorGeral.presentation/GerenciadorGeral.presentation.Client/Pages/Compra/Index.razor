@@ -48,7 +48,7 @@
 
   private async Task<ICollection<CompraDTO>> PopularCompras()
   {
-    return await compraApp.Listar<GerenciadorGeral.domain.Entidades.Compra>(null, i => i.Fornecedor);
+    return await compraApp.Listar();
   }
 
   public async Task Delete(Guid Id)

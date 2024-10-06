@@ -1,6 +1,7 @@
 ﻿@page "/Compra/Editar/{id?}"
 
 @using GerenciadorGeral.application.DTO
+@inject IJSRuntime JSRuntime;
 @inject NavigationManager navManager;
 @inject GerenciadorGeral.application.Interfaces.ICompraApp compraApp;
 @inject GerenciadorGeral.application.Interfaces.IFornecedorApp fornecedorApp;
@@ -20,7 +21,7 @@
 
             <div class="form-group mb-3">
               <label for="Fornecedor">Fornecedor</label>
-              <InputSelect id="CompraPai" @bind-Value="compra.IdFornecedor">
+              <InputSelect id="CompraPai" @bind-Value="compra.IdFornecedor" class="form-control selectpicker">
                 <option value="" class="dropdown-item">Selecione</option>
                 @foreach (var item in ListaFornecedor)
                 {
@@ -36,6 +37,11 @@
             </div>
 
             <div class="form-group mb-3">
+              <label class="form-label">Desconto</label>
+              <InputNumber @bind-Value="compra.Desconto" class="form-control"></InputNumber>
+            </div>
+
+            <div class="form-group mb-3">
               <label class="form-label">Valor Total</label>
               <InputNumber @bind-Value="compra.ValorTotal" class="form-control"></InputNumber>
             </div>
@@ -45,12 +51,41 @@
               <InputText @bind-Value="compra.Observacao" class="form-control"></InputText>
             </div>
 
-            @* <div class="form-group mb-3">
-            <label class="form-label">Ordem</label>
-            <InputText @bind-Value="CompraModel.Ordem" class="form-control"></InputText>
-            </div> *@
-
+            @if (compra.ListaItens != null && compra.ListaItens.Count() > 0)
+            {
+              <table class="table table-responsive table-striped">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Valor Unitário</th>
+                    <th>Quantidade</th>
+                    <th>Desconto</th>
+                    <th>Valor Total</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in compra.ListaItens)
+                  {
+                    <tr>
+                      <td>@item.SKU.Nome</td>
+                      <td>@item.ValorUnitario.ToString()</td>
+                      <td>@item.Quantidade.ToString()</td>
+                      <td>@item.Desconto.ToString()</td>
+                      <td>@item.ValorTotal.ToString()</td>
+                      <td>
+                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem"  @onclick="async () => EditarItem(item)">Editar</a>
+                        <button class="btn btn-danger" @onclick="async () => ExcluirItem(item.Id)">Excluir</button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
             <button type="submit" class="btn btn-success">Salvar</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem" @onclick="@(() => AdicionarItem())">
+              Adicionar Item
+            </button>
           </EditForm>
         </div>
       </div>
@@ -58,45 +93,16 @@
   </div>
 </div>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Launch demo modal
-</button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalItem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+      <CompraItem @ref="mdl" item="@compraItem" FormAction="@Action" Refresh="@Refresh" />
     </div>
   </div>
 </div>
 
-@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem">
-         @onclick="@(() => AddNew())"> Exibir modal 
-        Exibir modal
-</button>
-
-<div id="modalItem" class="modal fade" data-bs-backdrop="static">
-  <div class="modal-dialog modal-md modal-dialog-centered">
-    <div class="modal-content" style="background-color: transparent; border:black">
-      <div class="modal-body my-0 p-0">
-        teste
-        <CompraItem @ref="mdl" item="@compraItem" FormAction="@Action" Refresh="@Refresh" />
-      </div>
-    </div>
-  </div>
-</div> *@
 
 @code {
   CompraItem mdl;
@@ -110,7 +116,7 @@
   protected override async Task OnInitializedAsync()
   {
     ListaFornecedor = await fornecedorApp.SelectAll();
-    compra = !string.IsNullOrEmpty(id) ? await compraApp.SelectById(Guid.Parse(id)) : compra;
+    compra = !string.IsNullOrEmpty(id) ? await compraApp.Consultar(Guid.Parse(id)) : compra;
   }
 
   private async Task EditarCompra()
@@ -136,15 +142,47 @@
     navManager.NavigateTo("/Compra/Index");
   }
 
-  public void AddNew()
+  public void AdicionarItem()
   {
-    compraItem = new CompraItemDTO();
+    compraItem = new();
+    compraItem.IdCompra = compra.Id;
     Action = "A";
+  }
+
+  public void EditarItem(CompraItemDTO i)
+  {
+    compraItem = i;
+    Action = "U";
   }
 
   public void Refresh()
   {
-    compraItem = new CompraItemDTO();
-    Action = "A";
+    switch (Action)
+    {
+      case "A":
+        break;
+      case "U":
+        break;
+      default:
+        break;
+    }
+    
+  }
+
+  public async Task ExcluirItem(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o item?");
+    if (!confirma)
+      return;
+
+    //var sku = await compraApp.SelectById(Id);
+
+    // var sku = await compraApp.Consultar<GerenciadorGeral.domain.Entidades.Compra>(w => w.Id == Id, i => i.Fornecedor);
+
+    // await compraApp.Delete(sku.Id);
+
+    // listCompras = await PopularCompras();
+
+    StateHasChanged();
   }
 }

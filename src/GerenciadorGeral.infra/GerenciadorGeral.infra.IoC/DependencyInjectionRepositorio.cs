@@ -10,6 +10,7 @@ namespace GerenciadorGeral.infra.IoC
     {
       svcCollection.AddScoped(typeof(IRepositorioBase<>), typeof(RepositorioBase<>));
       svcCollection.AddScoped<ICompraRepositorio, CompraRepositorio>();
+      svcCollection.AddScoped<ICompraItemRepositorio, CompraItemRepositorio>();
       svcCollection.AddScoped<IFornecedorRepositorio, FornecedorRepositorio>();
       svcCollection.AddScoped<IMenuRepositorio, MenuRepositorio>();
       svcCollection.AddScoped<ISKURepositorio, SKURepositorio>();

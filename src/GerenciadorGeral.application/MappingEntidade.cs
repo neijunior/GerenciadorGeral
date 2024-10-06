@@ -11,6 +11,7 @@ namespace GerenciadorGeral.application
       CreateMap<SKU, SKUDTO>().ReverseMap();
       CreateMap<UnidadeMedida, UnidadeMedidaDTO>().ReverseMap();
       CreateMap<Compra, CompraDTO>().ReverseMap();
+      CreateMap<CompraItem, CompraItemDTO>().ReverseMap();
       CreateMap<Fornecedor, FornecedorDTO>().ReverseMap();
       CreateMap<Menu, MenuDTO>().ReverseMap();
     }

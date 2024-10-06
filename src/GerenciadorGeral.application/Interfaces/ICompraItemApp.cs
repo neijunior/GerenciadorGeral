@@ -3,9 +3,7 @@ using GerenciadorGeral.domain.Entidades;
 
 namespace GerenciadorGeral.application.Interfaces
 {
-  public interface ICompraApp : IAppBase<Compra, CompraDTO>
+  public interface ICompraItemApp : IAppBase<CompraItem, CompraItemDTO>
   {
-    Task<CompraDTO> Consultar (Guid Id);
-    Task<ICollection<CompraDTO>> Listar();
   }
 }

@@ -1,20 +1,101 @@
 ﻿@using GerenciadorGeral.application.DTO
-<h3>CompraItem</h3>
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.IUnidadeMedidaApp unidadeMedidaApp;
+@inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
+@inject GerenciadorGeral.application.Interfaces.ICompraItemApp compraItemApp;
+@rendermode InteractiveAuto
 
-<div class="modal-body">
-    <div class="card-footer">
-        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal"></button>
+
+<EditForm Model="@item" OnValidSubmit="EditarItem" FormName="frmCompraItem">
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Item</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group mb-3">
+      <label for="Fornecedor">SKU</label>
+      <InputSelect id="IdSku" @bind-Value="item.IdSku" class="form-control selectpicker">
+        <option value="" class="dropdown-item">Selecione</option>
+        @foreach (var sku in ListaSkus)
+        {
+          <option value="@sku.Id">@sku.Nome</option>
+        }
+      </InputSelect>
+    </div>    
+    <div class="form-group mb-3">
+      <label class="form-label">Valor Unitário</label>
+      <InputNumber @bind-Value="item.ValorUnitario" class="form-control"></InputNumber>
     </div>
-</div>
+    <div class="form-group mb-3">
+      <label class="form-label">Quantidade</label>
+      <InputNumber @bind-Value="item.Quantidade" class="form-control" onkeypress="@(async () => CalcularTotal(item.Quantidade))"></InputNumber>
+    </div>
 
+    <div class="form-group mb-3">
+      <label class="form-label">Desconto</label>
+      <InputNumber @bind-Value="item.Desconto" class="form-control"></InputNumber>
+    </div>
+
+    <div class="form-group mb-3">
+      <label class="form-label">Valor Total</label>
+      <InputNumber TValue="decimal" @bind-Value="item.ValorTotal" class="form-control decimal" placeholder="0,00"></InputNumber>
+
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </div>
+</EditForm>
 
 @code {
-    [Parameter] public CompraItemDTO item { get; set; }
-    [Parameter] public string FormAction { get; set; }
-    [Parameter] public EventCallback Refresh { get; set; }
+  [Parameter] public CompraItemDTO item { get; set; }
+  [Parameter] public string FormAction { get; set; }
+  [Parameter] public EventCallback Refresh { get; set; }
 
-    protected override void OnInitialized()
+  public ICollection<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; }
+  public ICollection<SKUDTO> ListaSkus { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    ListaUnidadeMedida = await unidadeMedidaApp.SelectAll();
+    ListaSkus = await skuApp.SelectAll();
+    if (item == null)
+      item = new CompraItemDTO();
+
+    base.OnInitialized();
+  }   
+
+  public async Task<decimal> CalcularTotal(decimal quantidade)
+  {
+    item.ValorTotal = item.ValorUnitario * quantidade;
+    return item.ValorTotal;
+  }
+
+  private async Task EditarItem()
+  {
+    GerenciadorGeral.domain.Entidades.CompraItem compraItemBD = new()
+      {
+        Id = item.Id,
+        IdCompra = item.IdCompra,
+        IdSku = item.IdSku,        
+        ValorUnitario = item.ValorUnitario,
+        Quantidade = item.Quantidade,
+        Desconto = item.Desconto,
+        ValorTotal = item.ValorTotal
+      };
+
+    if (FormAction == "A")
     {
-        base.OnInitialized();
+      compraItemBD.Id = Guid.NewGuid();
+      await compraItemApp.Insert(compraItemBD);
     }
+    else
+      await compraItemApp.Update(compraItemBD);
+
+    navManager.NavigateTo($"/Compra/Editar/{item.IdCompra}");
+  }
 }
