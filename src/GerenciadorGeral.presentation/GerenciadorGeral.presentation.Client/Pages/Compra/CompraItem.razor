@@ -20,7 +20,7 @@
         <option value="" class="dropdown-item">Selecione</option>
         @foreach (var sku in ListaSkus)
         {
-          <option value="@sku.Id">@sku.Nome</option>
+            <option value="@sku.Id">@sku.Nome</option>
         }
       </InputSelect>
     </div>    
@@ -67,7 +67,7 @@
       item = new CompraItemDTO();
 
     base.OnInitialized();
-  }   
+  }
 
   public async Task<decimal> CalcularTotal(decimal quantidade)
   {
@@ -81,20 +81,23 @@
       {
         Id = item.Id,
         IdCompra = item.IdCompra,
-        IdSku = item.IdSku,        
+        IdSku = item.IdSku,
         ValorUnitario = item.ValorUnitario,
         Quantidade = item.Quantidade,
         Desconto = item.Desconto,
         ValorTotal = item.ValorTotal
       };
 
-    if (FormAction == "A")
-    {
-      compraItemBD.Id = Guid.NewGuid();
-      await compraItemApp.Insert(compraItemBD);
-    }
-    else
-      await compraItemApp.Update(compraItemBD);
+    // if (FormAction == "A")
+    // {
+    //   compraItemBD.Id = Guid.NewGuid();
+    //   await compraItemApp.Insert(compraItemBD);
+    // }
+    // else
+    //   await compraItemApp.Update(compraItemBD);
+
+
+    await compraItemApp.Salvar(compraItemBD);
 
     navManager.NavigateTo($"/Compra/Editar/{item.IdCompra}");
   }

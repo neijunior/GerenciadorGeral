@@ -92,6 +92,9 @@
     if (string.IsNullOrEmpty(id))
     {
       MenuBD.Id = Guid.NewGuid();
+      if (!MenuBD.IdPai.HasValue)
+        MenuBD.IdPai = MenuBD.Id;
+
       await menuApp.Insert(MenuBD);
     }
     else

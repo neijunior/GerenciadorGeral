@@ -5,8 +5,10 @@ using GerenciadorGeral.application;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddAutoMapper(typeof(MappingEntidade).Assembly);
-builder.Services.RegisterAplicacao(); 
+builder.Services.Register(builder.Configuration);
+
+//builder.Services.AddAutoMapper(typeof(MappingEntidade).Assembly);
+//builder.Services.RegisterAplicacao(); 
 
 var host = builder.Build();
 

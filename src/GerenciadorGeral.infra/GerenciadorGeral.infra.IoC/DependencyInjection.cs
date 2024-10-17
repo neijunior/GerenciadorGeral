@@ -28,7 +28,7 @@ namespace GerenciadorGeral.infra.IoC
       svcCollection.AddDbContext<Contexto>(opt => opt.UseSqlServer(configuration.GetConnectionString("ConnAtivo"), b =>
       {
         b.MigrationsAssembly("GerenciadorGeral.infra.Data");
-        opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);        
       }));
     }
   }
