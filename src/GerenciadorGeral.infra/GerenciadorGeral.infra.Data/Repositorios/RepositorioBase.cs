@@ -84,6 +84,23 @@ namespace GerenciadorGeral.infra.Data.Repositorios
       }
     }
 
+    public async Task<TEntity> ConsultarUltimo<TEntity>(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
+    {
+      try
+      {
+        IQueryable<TEntity> query = _contexto.Set<TEntity>();
+        foreach (Expression<Func<TEntity, object>> inc in includes)
+          query = query.Include(inc);
+
+        return query.LastOrDefault(where);
+      }
+      catch (Exception ex)
+      {
+
+        throw ex;
+      }
+    }
+
     public async Task<ICollection<TEntity>> Listar<TEntity>(Func<TEntity, bool> where = default, params Expression<Func<TEntity, object>>[] includes) where TEntity : class
     {
       try

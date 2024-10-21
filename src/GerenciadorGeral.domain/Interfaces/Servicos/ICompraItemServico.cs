@@ -2,7 +2,8 @@
 
 namespace GerenciadorGeral.domain.Interfaces.Servicos
 {
-    public interface ICompraItemServico : IServicoBase<CompraItem>
-    {
-    }
+  public interface ICompraItemServico : IServicoBase<CompraItem>
+  {
+    Task<CompraItem> ConsultarUltimaCompra(string codigoSKU);
+  }
 }
