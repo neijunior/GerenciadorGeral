@@ -26,8 +26,8 @@ namespace GerenciadorGeral.application.Servicos
     public async Task<ICollection<MenuDTO>> MontarMenu()
     {
       ICollection<MenuDTO> menuMontado = new HashSet<MenuDTO>();
-      var listaNivelZero = await _servico.ListarNivelZero();
-      foreach (var item in listaNivelZero)
+      ICollection<Menu> listaNivelZero = await _servico.ListarNivelZero();
+      foreach (var item in listaNivelZero.OrderBy(o => o.Ordem).ToList())
       {
         menuMontado.Add(PopularMenuDTO(item));
         PopularMenuSubMenu(item.Id, await _servico.ListarFilhos(item.Id), ref menuMontado);

@@ -44,10 +44,10 @@
               <InputText @bind-Value="MenuModel.styleCss" class="form-control"></InputText>
             </div>
 
-            @* <div class="form-group mb-3">
-            <label class="form-label">Ordem</label>
-            <InputText @bind-Value="MenuModel.Ordem" class="form-control"></InputText>
-            </div> *@
+            <div class="form-group mb-3">
+              <label class="form-label">Ordem</label>
+              <InputNumber @bind-Value="MenuModel.Ordem" class="form-control"></InputNumber>
+            </div>
 
             <button type="submit" class="btn btn-success">Salvar</button>
           </EditForm>
@@ -72,7 +72,7 @@
 
   private async Task EditarMenu()
   {
-    if (MenuModel.IdPai.HasValue)
+    if (MenuModel.IdPai.HasValue && MenuModel.IdPai.Value != MenuModel.Id)
     {
       var pai = await menuApp.SelectById(MenuModel.IdPai.Value);
       MenuModel.Nivel = pai.Nivel + 1;

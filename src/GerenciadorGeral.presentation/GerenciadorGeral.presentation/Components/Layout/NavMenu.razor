@@ -6,14 +6,18 @@
   <div class="container-fluid">
     <a class="navbar-brand" href="">Gerenciador Geral</a>
   </div>
+
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
+
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
   <nav class="flex-column">
 
-    <div class="nav-item px-3">
+    @((MarkupString)menu)
+
+    @* <div class="nav-item px-3">
       <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
         <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
       </NavLink>
@@ -52,55 +56,52 @@
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Marca
       </NavLink>
     </div>
-
+ *@
   </nav>
 </div>
 
-@((MarkupString)menu)
+
 
 @code {
+  private string _itemMenu = @"<div class='nav-item px-3 {0}' b-orvd6lch9h>
+                               <a href='{1}' class='nav-link'>
+                               <span class='{2}' aria-hidden='true' b-orvd6lch9h></span> {3}
+                               </a>
+                               {4}
+                               </div>";
+
+
   public ICollection<MenuDTO> listaMenu;
   string menu = string.Empty;
-  // protected override async Task OnInitializedAsync()
-  // {
-  //   listaMenu = await menuApp.MontarMenu();
-  //   StringBuilder menuMontado = new StringBuilder();
-  //   MontarHtmlMenu(listaMenu, ref menuMontado);
-  //   this.menu = menuMontado.ToString();
-  // }
+
+  protected override async Task OnInitializedAsync()
+  {
+    listaMenu = await menuApp.MontarMenu();
+    StringBuilder menuMontado = new StringBuilder();
+    MontarHtmlMenu(listaMenu, ref menuMontado);
+    this.menu = menuMontado.ToString();
+  }
 
   private void MontarHtmlMenu(IEnumerable<MenuDTO> menus, ref StringBuilder html)
   {
+    //html.Append("<ul class='navbar-nav mr-auto'>");
     foreach (var item in menus)
     {
       html.AppendLine(MontarItemMenu(item));
     }
-    html.Append("</ul>");
+    //html.Append("</ul>");
   }
 
-  // private string _itemMenu = @"<div class='nav-item px-3'>
-  //                    <NavLink class='nav-link' href='{0}'>
-  //                   <span class='{1}' aria-hidden='true'></span> {2}
-  //                    </NavLink>
-  //                  </div>";
-  private string _itemMenu = @"<div class='nav-item px-3'><li class='menu__item {0}' >
-	                    <a href='{1}' class='menu__link {2}'>
-                      {5}
-		                  <span class='menu__link-text'>
-		                    {3}
-		                  </span>
-	                    </a>
-                      {4}
-	                  </li></div>";
   private string MontarItemMenu(MenuDTO menu)
   {
-    string linkDropDown = (menu.Filhos != null && menu.Filhos.Count > 0) ? "menu__link_dropdown" : "";
     string item = string.Empty;
 
+    bool temFilho = menu.Filhos.Count > 0;
+
     if (menu.Id == menu.IdPai)
-      item = string.Format(this._itemMenu, "menu__item_parent", menu.Filhos.Count > 0 ? "#" : menu.Url, linkDropDown, menu.Titulo, MontarSubMenus(menu), menu.styleCss);
+      item = string.Format(this._itemMenu, temFilho ? "dropdown" : string.Empty, temFilho ? "#" : menu.Url, menu.styleCss, menu.Titulo, MontarSubMenus(menu));
     else
-      item = string.Format(this._itemMenu, "", menu.Url, linkDropDown, menu.Titulo, "", menu.styleCss);
+      item = string.Format(this._itemMenu, temFilho ? "dropdown" : string.Empty, menu.Url, menu.styleCss, menu.Titulo, string.Empty);
 
     return item;
   }
@@ -109,14 +110,11 @@
   {
     StringBuilder filho = new StringBuilder();
     if (menu.Filhos != null && menu.Filhos.Count > 0)
-    {
-      filho.AppendLine("<ul class='menu__group'>");
+    {      
       foreach (var f in menu.Filhos)
       {
         filho.AppendLine(MontarItemMenu(f));
       }
-
-      filho.AppendLine("</ul>");
     }
     return filho.ToString();
   }

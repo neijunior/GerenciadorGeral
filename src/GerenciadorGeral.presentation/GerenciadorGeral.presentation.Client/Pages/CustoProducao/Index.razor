@@ -13,12 +13,26 @@
       <div class="card">
         <div class="card-header">Custo massa tradicional</div>
         <div class="card-body">
-          @foreach (var item in listaCustoProducaoModel)
+
+          <div class="form-group mb-3">
+            <label for="Fornecedor">Fornecedor</label>
+            @* <InputSelect id="CompraPai" Value="@custoProducao.Id" class="form-control selectpicker">
+              
+            </InputSelect> *@
+          </div>
+
+          @* <option value="" class="dropdown-item">Selecione</option>
+          @foreach (var item in ListaFornecedor)
+          {
+          <option value="@item.Id">@item.RazaoSocial</option>
+          } *@
+
+          @* @foreach (var item in listaCustoProducaoModel)
           {
             <div>
-              @string.Format("{0} - {1} - {3}", item.skuDTO.Nome, item.qtd.ToString(), item.valorCustoProducao.ToString());
+              @string.Format("{0} - {1} - {2}", item.skuDTO.Nome, item.qtd.ToString(), item.valorCustoProducao.ToString());
             </div>
-          }
+          } *@
           @*
           <EditForm Model="@custoProducaoModel" FormName="CustoProducao">
           <DataAnnotationsValidator />
@@ -46,10 +60,11 @@
 
 @code {
   public ICollection<CustoProducaoDTO> listaCustoProducaoModel { get; set; }
+  public CustoProducaoDTO custoProducao { get; set; } = new();
 
   protected override async Task OnInitializedAsync()
   {
-    listaCustoProducaoModel = await custoProducaoApp.ConsultaCustoPadrao();
+    listaCustoProducaoModel = new HashSet<CustoProducaoDTO>();   //await custoProducaoApp.ConsultaCustoPadrao();
     //fornecedorModel = !string.IsNullOrEmpty(id) ? await fornecedorApp.SelectById(Guid.Parse(id)) : fornecedorModel;
   }
 
