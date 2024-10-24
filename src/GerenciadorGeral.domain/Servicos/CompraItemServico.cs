@@ -12,10 +12,11 @@ namespace GerenciadorGeral.domain.Servicos
       this._repositorio = repositorio;
     }
 
-    public async Task<CompraItem> ConsultarUltimaCompra(string codigoSKU)
-    {      
-      var item = await _repositorio.ConsultarUltimo<CompraItem>(w => w.SKU.Codigo == codigoSKU, i => i.SKU, i => i.Compra);
-      return item;
+    public async Task<CompraItem> ConsultarUltimaCompra(Guid idSku)
+    {
+      var item = await _repositorio.Listar<CompraItem>(w => w.IdSku == idSku, i => i.SKU, i => i.Compra);
+
+      return item.OrderByDescending(o => o.Compra.Data).LastOrDefault();
     }
 
   }

@@ -14,5 +14,6 @@ namespace GerenciadorGeral.application.DTO
     public Guid IdUsuario { get; set; }
     public string Observacao { get; set; }
     public UsuarioDTO Usuario { get; set; }
+    public ICollection<CustoProducaoDetalheDTO> ListaItens { get; set; }
   }
 }

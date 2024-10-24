@@ -1,0 +1,179 @@
+﻿@page "/CustoProducao/Editar/{id?}"
+
+@using GerenciadorGeral.application.DTO
+@inject IJSRuntime JSRuntime;
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.ICustoProducaoApp custoProducaoApp;
+@inject GerenciadorGeral.application.Interfaces.IUsuarioApp usuarioApp;
+@rendermode InteractiveServer
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">Adicionar Custo Producao</div>
+        <div class="card-body">
+
+          <EditForm Model="custoProducaoModel" OnValidSubmit="EditarCusto" FormName="frmCustoProducao">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group mb-3">
+              <label class="form-label">Item Produzido</label>
+              <InputText @bind-Value="custoProducaoModel.NomeItemProduzido" class="form-control"></InputText>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="Usuario">Usuário</label>
+              <InputSelect id="usuarioResponsavel" @bind-Value="custoProducaoModel.IdUsuario" class="form-control selectpicker">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaUsuario)
+                {
+                  <option value="@item.Id">@item.Nome</option>
+                }
+              </InputSelect>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Data</label>
+              <InputDate @bind-Value="custoProducaoModel.DataCalculo" class="form-control"></InputDate>
+              @* <ValidationMessage For="()=>CompraModel.Titulo"></ValidationMessage> *@
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Observação</label>
+              <InputText @bind-Value="custoProducaoModel.Observacao" class="form-control"></InputText>
+            </div>
+
+            @if (custoProducaoModel.ListaItens != null && custoProducaoModel.ListaItens.Count() > 0)
+            {
+              <table class="table table-responsive table-striped">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Qtd. Utilizada</th>
+                    <th>Custo Aquisição</th>                    
+                    <th>Valor Custo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in custoProducaoModel.ListaItens)
+                  {
+                    <tr>
+                      <td>@item.SKU.Nome</td>
+                      <td>@item.qtdUtilizada.ToString()</td>
+                      <td>@item.CustoAquisicaoItem.ToString()</td>                      
+                      <td>@item.ValorCustoProducao.ToString()</td>
+                      @* <td>
+                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem"  @onclick="async () => EditarItem(item)">Editar</a>
+                        <button class="btn btn-danger" @onclick="async () => ExcluirItem(item.Id)">Excluir</button>
+                      </td> *@
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+            <button type="submit" class="btn btn-success">Salvar</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem" @onclick="@(() => AdicionarItem())">
+              Adicionar Item
+            </button>
+          </EditForm>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalItem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <CustoProducaoDetalhe @ref="mdl" item="@custoProducaoDetalhe" FormAction="@Action" Refresh="@Refresh" />
+    </div>
+  </div>
+</div>
+
+
+@code {
+  CustoProducaoDetalhe mdl;
+  public CustoProducaoDTO custoProducaoModel { get; set; } = new();
+  public CustoProducaoDetalheDTO custoProducaoDetalhe { get; set; } = new();
+  public string Action { get; set; }
+  public ICollection<UsuarioDTO> ListaUsuario { get; set; }
+
+  [Parameter] public string id { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    ListaUsuario = await usuarioApp.SelectAll();
+    custoProducaoModel = !string.IsNullOrEmpty(id) ? await custoProducaoApp.Consultar(Guid.Parse(id)) : custoProducaoModel;
+  }
+
+  private async Task EditarCusto()
+  {
+    GerenciadorGeral.domain.Entidades.CustoProducao custoBD = new()
+      {
+        Id = custoProducaoModel.Id,
+        NomeItemProduzido = custoProducaoModel.NomeItemProduzido,
+        DataCalculo = custoProducaoModel.DataCalculo,
+        IdUsuario = custoProducaoModel.IdUsuario,
+        Observacao = custoProducaoModel.Observacao
+      };
+
+    if (string.IsNullOrEmpty(id))
+    {
+      custoBD.Id = Guid.NewGuid();
+      await custoProducaoApp.Insert(custoBD);
+    }
+    else
+      await custoProducaoApp.Update(custoBD);
+
+    navManager.NavigateTo("/CustoProducao/Index");
+  }
+
+  public void AdicionarItem()
+  {
+    custoProducaoDetalhe = new();
+    custoProducaoDetalhe.IdCustoProducao = custoProducaoModel.Id;
+    Action = "A";
+  }
+
+  public void EditarItem(CustoProducaoDTO i)
+  {
+    custoProducaoModel = i;
+    Action = "U";
+  }
+
+  public void Refresh()
+  {
+    switch (Action)
+    {
+      case "A":
+        break;
+      case "U":
+        break;
+      default:
+        break;
+    }
+    
+  }
+
+  public async Task ExcluirItem(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o item?");
+    if (!confirma)
+      return;
+
+    //var sku = await compraApp.SelectById(Id);
+
+    // var sku = await compraApp.Consultar<GerenciadorGeral.domain.Entidades.Compra>(w => w.Id == Id, i => i.Fornecedor);
+
+    // await compraApp.Delete(sku.Id);
+
+    // listCompras = await PopularCompras();
+
+    StateHasChanged();
+  }
+}

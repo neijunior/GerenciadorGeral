@@ -4,6 +4,6 @@ namespace GerenciadorGeral.domain.Interfaces.Servicos
 {
   public interface ICompraItemServico : IServicoBase<CompraItem>
   {
-    Task<CompraItem> ConsultarUltimaCompra(string codigoSKU);
+    Task<CompraItem> ConsultarUltimaCompra(Guid idSku);
   }
 }

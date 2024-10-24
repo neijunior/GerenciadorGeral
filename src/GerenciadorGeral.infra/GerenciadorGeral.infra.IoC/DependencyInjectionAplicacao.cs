@@ -17,6 +17,7 @@ namespace GerenciadorGeral.infra.IoC
       svcCollection.AddScoped<IUnidadeMedidaApp, UnidadeMedidaApp>();
       svcCollection.AddScoped<IMarcaApp, MarcaApp>();
       svcCollection.AddScoped<ICustoProducaoApp, CustoProducaoApp>();
+      svcCollection.AddScoped<ICustoProducaoDetalheApp, CustoProducaoDetalheApp>();
       svcCollection.AddScoped<IUsuarioApp, UsuarioApp>();
     }
   }
