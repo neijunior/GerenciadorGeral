@@ -16,6 +16,7 @@ namespace GerenciadorGeral.infra.IoC
       svcCollection.AddScoped<ISKUServico, SKUServico>();
       svcCollection.AddScoped<IUnidadeMedidaServico, UnidadeMedidaServico>();
       svcCollection.AddScoped<IMarcaServico, MarcaServico>();
+      svcCollection.AddScoped<IUsuarioServico, UsuarioServico>();
     }
   }
 }

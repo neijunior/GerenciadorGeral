@@ -10,10 +10,12 @@ namespace GerenciadorGeral.infra.Data.Contextos
     public DbSet<Marca> Marca { get; set; }
     public DbSet<Menu> Menu { get; set; }
     public DbSet<SKU> SKU { get; set; }
-    public DbSet<UnidadeMedida> UnidadeMedida { get; set; }
-    
+    public DbSet<UnidadeMedida> UnidadeMedida { get; set; }    
     public DbSet<Compra> Compra { get; set; }
-    
+    public DbSet<Usuario> Usuario { get; set; }
+    public DbSet<CustoProducao> CustoProducao { get; set; }
+    public DbSet<CustoProducaoDetalhe> CustoProducaoDetalhe { get; set; }
+
     public IDbContextTransaction Transaction { get; private set; }
     public Contexto(DbContextOptions<Contexto> options) : base(options)
     {

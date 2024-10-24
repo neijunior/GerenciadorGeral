@@ -14,6 +14,9 @@ namespace GerenciadorGeral.application
       CreateMap<CompraItem, CompraItemDTO>().ReverseMap();
       CreateMap<Fornecedor, FornecedorDTO>().ReverseMap();
       CreateMap<Menu, MenuDTO>().ReverseMap();
+      CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+      CreateMap<CustoProducao, CustoProducaoDTO>().ReverseMap();
+      CreateMap<CustoProducaoDetalhe, CustoProducaoDetalheDTO>().ReverseMap();
     }
   }
 }

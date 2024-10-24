@@ -8,9 +8,11 @@ namespace GerenciadorGeral.application.DTO
 {
   public class CustoProducaoDTO : BaseDTO
   {
-    public SKUDTO skuDTO { get; set; }    
-    public decimal qtd { get; set; }
-    public decimal valorCompra { get; set; }
-    public decimal valorCustoProducao { get; set; }
+    
+    public string NomeItemProduzido { get; set; }
+    public DateTime DataCalculo { get; set; }
+    public Guid IdUsuario { get; set; }
+    public string Observacao { get; set; }
+    public UsuarioDTO Usuario { get; set; }
   }
 }

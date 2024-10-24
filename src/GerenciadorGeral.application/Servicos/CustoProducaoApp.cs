@@ -16,7 +16,7 @@ namespace GerenciadorGeral.application.Servicos
       this._servicoCompraItem = servicoCompraItem;
     }
 
-    public async Task<ICollection<CustoProducaoDTO>> ConsultaCustoPadrao()
+    public async Task<ICollection<CustoProducaoDTO>> ConsultaCustoPadrao(ICollection<string> itens)
     {
       //Qually
       var ultimaMargarinaComprada = await _servicoCompraItem.ConsultarUltimaCompra("MAR-500G-QUA");
