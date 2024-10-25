@@ -4,7 +4,9 @@
 @inject IJSRuntime JSRuntime;
 @inject NavigationManager navManager;
 @inject GerenciadorGeral.application.Interfaces.ICustoProducaoApp custoProducaoApp;
+@inject GerenciadorGeral.application.Interfaces.ICustoProducaoDetalheApp custoProducaoDetalheApp;
 @inject GerenciadorGeral.application.Interfaces.IUsuarioApp usuarioApp;
+@inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
 @rendermode InteractiveServer
 
 <div class="container">
@@ -20,8 +22,14 @@
             <ValidationSummary />
 
             <div class="form-group mb-3">
-              <label class="form-label">Item Produzido</label>
-              <InputText @bind-Value="custoProducaoModel.NomeItemProduzido" class="form-control"></InputText>
+              <label for="Usuario">SKU</label>
+              <InputSelect id="idSKU" @bind-Value="custoProducaoModel.IdSKU" class="form-control selectpicker">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaSKU)
+                {
+                  <option value="@item.Id">@item.Nome</option>
+                }
+              </InputSelect>
             </div>
 
             <div class="form-group mb-3">
@@ -46,7 +54,7 @@
               <InputText @bind-Value="custoProducaoModel.Observacao" class="form-control"></InputText>
             </div>
 
-            @if (custoProducaoModel.ListaItens != null && custoProducaoModel.ListaItens.Count() > 0)
+            @if (custoProducaoModel.ListaProducaoDetalhe != null && custoProducaoModel.ListaProducaoDetalhe.Count() > 0)
             {
               <table class="table table-responsive table-striped">
                 <thead>
@@ -58,7 +66,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach (var item in custoProducaoModel.ListaItens)
+                  @foreach (var item in custoProducaoModel.ListaProducaoDetalhe)
                   {
                     <tr>
                       <td>@item.SKU.Nome</td>
@@ -102,11 +110,13 @@
   public CustoProducaoDetalheDTO custoProducaoDetalhe { get; set; } = new();
   public string Action { get; set; }
   public ICollection<UsuarioDTO> ListaUsuario { get; set; }
+  public ICollection<SKUDTO> ListaSKU { get; set; }
 
   [Parameter] public string id { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
+    ListaSKU = await skuApp.ListarProdutoInterno();
     ListaUsuario = await usuarioApp.SelectAll();
     custoProducaoModel = !string.IsNullOrEmpty(id) ? await custoProducaoApp.Consultar(Guid.Parse(id)) : custoProducaoModel;
   }
@@ -116,7 +126,7 @@
     GerenciadorGeral.domain.Entidades.CustoProducao custoBD = new()
       {
         Id = custoProducaoModel.Id,
-        NomeItemProduzido = custoProducaoModel.NomeItemProduzido,
+        IdSKU = custoProducaoModel.IdSKU,
         DataCalculo = custoProducaoModel.DataCalculo,
         IdUsuario = custoProducaoModel.IdUsuario,
         Observacao = custoProducaoModel.Observacao

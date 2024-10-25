@@ -63,17 +63,17 @@
 
   private async Task EditarDetalhe()
   {
-    GerenciadorGeral.domain.Entidades.CustoProducaoDetalhe custoProducaoDetalheBD = new()
-      {
-        Id = item.Id,
-        IdCustoProducao = item.IdCustoProducao,
-        IdSKU = item.IdSKU,
-        qtdUtilizada = item.qtdUtilizada,
-        CustoAquisicaoItem = item.CustoAquisicaoItem,
-        ValorCustoProducao = item.ValorCustoProducao
-      };
+    // GerenciadorGeral.domain.Entidades.CustoProducaoDetalhe custoProducaoDetalheBD = new()
+    //   {
+    //     Id = item.Id,
+    //     IdCustoProducao = item.IdCustoProducao,
+    //     IdSKU = item.IdSKU,
+    //     qtdUtilizada = item.qtdUtilizada,
+    //     CustoAquisicaoItem = item.CustoAquisicaoItem,
+    //     ValorCustoProducao = item.ValorCustoProducao
+    //   };
 
-    await custoProdutcaoDetalheApp.Insert(custoProducaoDetalheBD);
+    await custoProdutcaoDetalheApp.Salvar(item);
 
     navManager.NavigateTo($"/CustoProducao/Editar/{item.IdCustoProducao}");
   }

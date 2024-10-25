@@ -7,58 +7,56 @@
 @inject GerenciadorGeral.application.Interfaces.ICustoProducaoApp custoProducaoApp;
 @rendermode InteractiveAuto
 
-<h3>Compras</h3>
-
-<a href="/CustoProducao/Editar" class="btn btn-sucess">Criar</a>
-
 <div class="container">
   <div class="row">
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-header">Custo massa tradicional</div>
-        <div class="card-body">
+    <div class="col-md-9">
+      <h3>Custo Produção</h3>
+    </div>
+    <div class="col-md-3 right">
+      <a href="/CustoProducao/Editar" class="btn btn-success">Adicionar</a>
+    </div>
+  </div>
+  <div class="row">
+    @foreach (var item in listaCustoProducaoModel)
+    {
+      <div class="col-md-5">
+        <div class="card">
+          <div class="card-header">@item.SKU.Nome</div>
+          <div class="card-body">
+            @if (item.ListaProducaoDetalhe != null && item.ListaProducaoDetalhe.Count() > 0)
+            {
+              <table class="table table-responsive table-striped">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Qtd. Utilizada</th>
+                    <th>Valor Custo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var det in item.ListaProducaoDetalhe)
+                  {
+                    <tr>
+                      <td>@det.SKU.Nome</td>
+                      <td>@det.qtdUtilizada.ToString()</td>
+                      <td>@det.ValorCustoProducao.ToString()</td>
+                    </tr>
+                  }
+                  <tr>
+                    <td colspan="2">Total</td>
+                    <td>@item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao).ToString()</td>
+                  </tr>
+                </tbody>
 
-          <div class="form-group mb-3">
-            <label for="Fornecedor">Fornecedor</label>
-            @* <InputSelect id="CompraPai" Value="@custoProducao.Id" class="form-control selectpicker">
-              
-            </InputSelect> *@
+              </table>
+            }
           </div>
-
-          @* <option value="" class="dropdown-item">Selecione</option>
-          @foreach (var item in ListaFornecedor)
-          {
-          <option value="@item.Id">@item.RazaoSocial</option>
-          } *@
-
-          @* @foreach (var item in listaCustoProducaoModel)
-          {
-            <div>
-              @string.Format("{0} - {1} - {2}", item.skuDTO.Nome, item.qtd.ToString(), item.valorCustoProducao.ToString());
-            </div>
-          } *@
-          @*
-          <EditForm Model="@custoProducaoModel" FormName="CustoProducao">
-          <DataAnnotationsValidator />
-          <ValidationSummary />
-
-          <div class="form-group mb-3">
-          <label class="form-label">CPF/CNPJ</label>
-          <InputText @bind-Value="fornecedorModel.CpfCnpj" class="form-control"></InputText>
-          <ValidationMessage For="()=>fornecedorModel.CpfCnpj"></ValidationMessage>
+          <div class="card-footer">
+            <a href="/CustoProducao/Editar/@item.Id" class="btn btn-primary">Editar</a>
           </div>
-
-          <div class="form-group mb-3">
-          <label class="form-label">RazaoSocial</label>
-          <InputText @bind-Value="fornecedorModel.RazaoSocial " class="form-control"></InputText>
-          <ValidationMessage For="()=>fornecedorModel.RazaoSocial"></ValidationMessage>
-          </div>
-
-          <button type="submit" class="btn btn-success">Salvar</button>
-          </EditForm>*@
         </div>
       </div>
-    </div>
+    }
   </div>
 </div>
 
@@ -68,8 +66,7 @@
 
   protected override async Task OnInitializedAsync()
   {
-    listaCustoProducaoModel = new HashSet<CustoProducaoDTO>();   //await custoProducaoApp.ConsultaCustoPadrao();
-    //fornecedorModel = !string.IsNullOrEmpty(id) ? await fornecedorApp.SelectById(Guid.Parse(id)) : fornecedorModel;
+    listaCustoProducaoModel = await custoProducaoApp.Listar();
   }
 
   // private async Task EditarFornecedor()

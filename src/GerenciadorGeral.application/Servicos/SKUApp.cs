@@ -11,5 +11,11 @@ namespace GerenciadorGeral.application.Servicos
     public SKUApp(IMapper iMapper, ISKUServico servico) : base(iMapper, servico)
     {
     }
+
+    public async Task<ICollection<SKUDTO>> ListarProdutoInterno()
+    {
+      var listaProdutoInterno = await _servicoBase.Listar<SKU>(w => w.Interno.HasValue && w.Interno.Value);
+      return _iMapperBase.Map<ICollection<SKUDTO>>(listaProdutoInterno);
+    }
   }
 }

@@ -26,10 +26,11 @@ namespace GerenciadorGeral.application.Servicos
       foreach (var item in listaItens)
       {
         var ultimaCompra = await _servicoCompraItem.ConsultarUltimaCompra(item.IdSKU);
-        lista.Add(new CustoProducaoDetalheDTO() {
+        lista.Add(new CustoProducaoDetalheDTO()
+        {
           Id = Guid.NewGuid(),
           IdSKU = item.IdSKU,
-          qtdUtilizada = item.qtdUtilizada, 
+          qtdUtilizada = item.qtdUtilizada,
           CustoAquisicaoItem = item.CustoAquisicaoItem
         });
       }
@@ -52,21 +53,10 @@ namespace GerenciadorGeral.application.Servicos
 
     public async Task<ICollection<CustoProducaoDTO>> Listar()
     {
-
-      return null;
+      var lista = await this._servicoCustoProducao.Listar();
+      return _iMapper.Map<ICollection<CustoProducaoDTO>>(lista);
 
     }
-
-    private async Task<ICollection<CustoProducaoDTO>> TratarCusto(ICollection<CustoProducaoDTO> listaCusto)
-    {
-    //  ICollection<CustoProducaoDTO> listaTratada = new HashSet<CustoProducaoDTO>();
-    //  foreach (var item in listaCusto)
-    //  {
-    //    item.valorCustoProducao = ((item.valorCompra * item.qtd) / item.skuDTO.Quantidade);
-    //    listaTratada.Add(item);
-    //  }
-
-      return null;
-    }
+    
   }
 }

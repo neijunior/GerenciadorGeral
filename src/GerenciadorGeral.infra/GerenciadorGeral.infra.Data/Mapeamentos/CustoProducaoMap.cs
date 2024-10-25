@@ -17,8 +17,10 @@ namespace GerenciadorGeral.infra.Data.Mapeamentos
       builder.ToTable("CustoProducao", "dbo");
 
       builder.Property(c => c.IdUsuario).IsRequired();
+      builder.Property(c => c.IdSKU).IsRequired();
 
       builder.HasOne(c => c.Usuario).WithMany(c => c.CustoProducao).HasForeignKey(c => c.IdUsuario);
+      builder.HasOne(c => c.SKU).WithMany(c => c.ListaCustoProducao).HasForeignKey(c => c.IdSKU);
     }
   }
 }

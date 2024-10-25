@@ -7,7 +7,7 @@
 @inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
 @inject GerenciadorGeral.application.Interfaces.IUnidadeMedidaApp unidadeMedidaApp;
 @inject GerenciadorGeral.application.Interfaces.IMarcaApp marcaApp;
-@rendermode InteractiveAuto
+@rendermode InteractiveServer
 
 <div class="container">
   <div class="row">
@@ -23,7 +23,7 @@
 
             <div class="form-group mb-3">
               <label class="form-label">Código</label>
-              <InputText @bind-Value="skuModel.Codigo" class="form-control" disable></InputText>              
+              <InputText @bind-Value="skuModel.Codigo" class="form-control" disable></InputText>
             </div>
 
             <div class="form-group mb-3">
@@ -45,7 +45,7 @@
             </div>
 
             <div class="form-group mb-3">
-              <label class="form-label">Nome</label>
+              <label class="form-label">Quantidade</label>
               <InputNumber @bind-Value="skuModel.Quantidade" class="form-control"></InputNumber>
               <ValidationMessage For="()=>skuModel.Quantidade"></ValidationMessage>
             </div>
@@ -60,6 +60,11 @@
                 }
               </InputSelect>
               <ValidationMessage For="()=>skuModel.IdMarca"></ValidationMessage>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Interno</label>
+              <InputCheckbox @bind-Value="skuModel.Interno"></InputCheckbox>
             </div>
 
             <button type="submit" class="btn btn-success">Salvar</button>
@@ -94,9 +99,10 @@
         Id = skuModel.Id,
         Codigo = Codigo.ToUpper(),
         Nome = skuModel.Nome,
-        CodigoUnidadeMedida = skuModel.CodigoUnidadeMedida,        
+        CodigoUnidadeMedida = skuModel.CodigoUnidadeMedida,
         Quantidade = skuModel.Quantidade,
-        IdMarca = skuModel.IdMarca
+        IdMarca = skuModel.IdMarca,
+        Interno = skuModel.Interno
       };
 
     if (string.IsNullOrEmpty(id))

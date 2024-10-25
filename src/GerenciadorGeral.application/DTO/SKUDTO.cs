@@ -12,5 +12,6 @@ namespace GerenciadorGeral.application.DTO
     public decimal Quantidade { get; set; }
     public Guid IdMarca { get; set; }
     public string NomeMarca { get; set; }
+    public bool Interno { get; set; }
   }
 }

@@ -3,7 +3,7 @@
 @using GerenciadorGeral.application.DTO;
 @inject IJSRuntime JSRuntime;
 @inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
-@rendermode InteractiveAuto
+@rendermode InteractiveServer
 
 <h3>sku</h3>
 
@@ -17,6 +17,7 @@
       <th>Marca</th>
       <th>Unidade de Medida</th>
       <th>Quantidade</th>
+      <th>Interno</th>
       <th>Ações</th>
     </tr>
   </thead>
@@ -31,6 +32,7 @@
           <td>@sku.NomeMarca</td>
           <td>@sku.CodigoUnidadeMedida</td>
           <td>@sku.Quantidade.ToString()</td>
+          <td>@(sku.Interno ? "Sim" : "Não")</td>
           <td>
             <a href="/Sku/Editar/@sku.Id" class="btn btn-primary">Editar</a>
             <button class="btn btn-danger" @onclick="async () => Delete(sku.Id)">Excluir</button>
@@ -57,7 +59,8 @@
         Codigo = x.Codigo,
         Nome = x.Nome,
         CodigoUnidadeMedida = x.CodigoUnidadeMedida,
-        Quantidade = x.Quantidade
+        Quantidade = x.Quantidade,
+        Interno = x.Interno
       }).ToList();
   }
 

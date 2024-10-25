@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20241025144108_AlterTable_SKU_25102024_1140")]
+    partial class AlterTable_SKU_25102024_1140
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,19 +99,18 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.Property<DateTime>("DataCalculo")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("IdSKU")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("IdUsuario")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NomeItemProduzido")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Observacao")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdSKU");
 
                     b.HasIndex("IdUsuario");
 
@@ -239,9 +241,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.Property<Guid>("IdMarca")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool?>("Interno")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -250,6 +249,9 @@ namespace GerenciadorGeral.infra.Data.Migrations
 
                     b.Property<decimal>("Quantidade")
                         .HasColumnType("decimal(16,2)");
+
+                    b.Property<bool?>("SkuInterno")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -356,19 +358,11 @@ namespace GerenciadorGeral.infra.Data.Migrations
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CustoProducao", b =>
                 {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.SKU", "SKU")
-                        .WithMany("ListaCustoProducao")
-                        .HasForeignKey("IdSKU")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("GerenciadorGeral.domain.Entidades.Usuario", "Usuario")
                         .WithMany("CustoProducao")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("SKU");
 
                     b.Navigation("Usuario");
                 });
@@ -433,8 +427,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
                 {
-                    b.Navigation("ListaCustoProducao");
-
                     b.Navigation("ListaCustoProducaoDetalhe");
 
                     b.Navigation("ListaItens");
