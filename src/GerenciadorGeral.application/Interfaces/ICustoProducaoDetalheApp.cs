@@ -6,5 +6,6 @@ namespace GerenciadorGeral.application.Interfaces
   public interface ICustoProducaoDetalheApp : IAppBase<CustoProducaoDetalhe, CustoProducaoDetalheDTO>
   {
     Task<RetornoDTO> Salvar(CustoProducaoDetalheDTO detalhe);
+    Task<ICollection<CustoProducaoDetalheDTO>> AtualizarValoresCusto(Guid IdCustoProducao);
   }
 }

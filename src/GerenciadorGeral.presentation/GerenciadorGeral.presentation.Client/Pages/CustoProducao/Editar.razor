@@ -72,11 +72,7 @@
                       <td>@item.SKU.Nome</td>
                       <td>@item.qtdUtilizada.ToString()</td>
                       <td>@item.CustoAquisicaoItem.ToString()</td>                      
-                      <td>@item.ValorCustoProducao.ToString()</td>
-                      @* <td>
-                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem"  @onclick="async () => EditarItem(item)">Editar</a>
-                        <button class="btn btn-danger" @onclick="async () => ExcluirItem(item.Id)">Excluir</button>
-                      </td> *@
+                      <td>@item.ValorCustoProducao.ToString()</td>                      
                     </tr>
                   }
                 </tbody>
@@ -85,6 +81,9 @@
             <button type="submit" class="btn btn-success">Salvar</button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalItem" @onclick="@(() => AdicionarItem())">
               Adicionar Item
+            </button>
+            <button type="button" class="btn btn-primary" @onclick="@(() => AtualizarValoresCusto(custoProducaoModel.Id))">
+              <span class="bi bi-arrow-repeat"></span>Atualizar valores
             </button>
           </EditForm>
         </div>
@@ -148,6 +147,17 @@
     custoProducaoDetalhe = new();
     custoProducaoDetalhe.IdCustoProducao = custoProducaoModel.Id;
     Action = "A";
+  }
+
+  public async void AtualizarValoresCusto(Guid IdCustoProducao)
+  {    
+    var lista = await custoProducaoDetalheApp.AtualizarValoresCusto(IdCustoProducao);
+    var listaSkuBase = await skuApp.ListarProdutos(lista.Select(s => s.IdSKU).ToList());
+    custoProducaoModel.ListaProducaoDetalhe = lista;
+    foreach (var item in custoProducaoModel.ListaProducaoDetalhe.Where(w => w.SKU == null).ToList())
+    {
+      item.SKU = listaSkuBase.FirstOrDefault(f => f.Id == item.IdSKU);
+    }
   }
 
   public void EditarItem(CustoProducaoDTO i)

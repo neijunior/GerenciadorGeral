@@ -17,46 +17,26 @@
     </div>
   </div>
   <div class="row">
-    @foreach (var item in listaCustoProducaoModel)
-    {
-      <div class="col-md-5">
-        <div class="card">
-          <div class="card-header">@item.SKU.Nome</div>
-          <div class="card-body">
-            @if (item.ListaProducaoDetalhe != null && item.ListaProducaoDetalhe.Count() > 0)
-            {
-              <table class="table table-responsive table-striped">
-                <thead>
-                  <tr>
-                    <th>SKU</th>
-                    <th>Qtd. Utilizada</th>
-                    <th>Valor Custo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach (var det in item.ListaProducaoDetalhe)
-                  {
-                    <tr>
-                      <td>@det.SKU.Nome</td>
-                      <td>@det.qtdUtilizada.ToString()</td>
-                      <td>@det.ValorCustoProducao.ToString()</td>
-                    </tr>
-                  }
-                  <tr>
-                    <td colspan="2">Total</td>
-                    <td>@item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao).ToString()</td>
-                  </tr>
-                </tbody>
 
-              </table>
-            }
-          </div>
-          <div class="card-footer">
-            <a href="/CustoProducao/Editar/@item.Id" class="btn btn-primary">Editar</a>
-          </div>
-        </div>
-      </div>
-    }
+    <table class="table table-responsive table-striped">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Valor Custo</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var item in listaCustoProducaoModel)
+        {
+          <tr>
+            <td>@string.Concat(item.SKU.Nome, " - ", item.SKU.Quantidade, item.SKU.CodigoUnidadeMedida)</td>
+            <td>@item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao).ToString()</td>
+            <td><a href="/CustoProducao/Editar/@item.Id" class="btn btn-primary">Editar</a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 </div>
 

@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Utilitario\Formatacao\Formatacao.csproj" />
     <ProjectReference Include="..\GerenciadorGeral.domain\GerenciadorGeral.domain.csproj" />
   </ItemGroup>
 

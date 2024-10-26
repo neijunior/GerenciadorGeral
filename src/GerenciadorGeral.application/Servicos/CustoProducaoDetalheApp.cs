@@ -3,6 +3,8 @@ using GerenciadorGeral.application.DTO;
 using GerenciadorGeral.application.Interfaces;
 using GerenciadorGeral.domain.Entidades;
 using GerenciadorGeral.domain.Interfaces.Servicos;
+using System.Collections.Generic;
+using Formatacao;
 
 namespace GerenciadorGeral.application.Servicos
 {
@@ -20,6 +22,33 @@ namespace GerenciadorGeral.application.Servicos
       this._servicoSKU = servicoSKU;
     }
 
+    private void CalcularValorCusto(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
+    {
+      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU).Result);
+      if (sku != null && sku.Interno)
+      {
+        var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe).Result;
+        var item = custoProducao.OrderByDescending(o => o.DataCalculo).FirstOrDefault();
+        detalhe.CustoAquisicaoItem = item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao);
+      }
+      else
+      {
+        if (detalhe.CustoAquisicaoItem == 0 || atualizarValor)
+        {
+          var compra = _servicoCompraItem.ConsultarUltimaCompra(detalhe.IdSKU).Result;
+          detalhe.CustoAquisicaoItem = compra.ValorUnitario;
+        }
+      }
+
+      detalhe.SKU = sku;
+
+      TratarCusto(ref detalhe);
+
+      detalhe.SKU = null;
+      detalhe.CustoProducao = null;
+
+    }
+
     public async Task<RetornoDTO> Salvar(CustoProducaoDetalheDTO detalhe)
     {
       RetornoDTO retorno = new RetornoDTO()
@@ -30,28 +59,8 @@ namespace GerenciadorGeral.application.Servicos
 
       try
       {
-        var sku = _iMapper.Map<SKUDTO>(await _servicoSKU.SelectById(detalhe.IdSKU));
-        if (sku != null && sku.Interno)
-        {
-          var custoProducao = await _servicoBase.Listar<CustoProducao>(w => w.ListaProducaoDetalhe.Any(a => a.IdSKU == sku.Id), i => i.ListaProducaoDetalhe);
-          var item = custoProducao.OrderByDescending(o => o.DataCalculo).FirstOrDefault();
-          detalhe.CustoAquisicaoItem = item.ListaProducaoDetalhe.FirstOrDefault(w => w.IdSKU == detalhe.IdSKU).ValorCustoProducao;
-        }
-        else
-        {
-          if (detalhe.CustoAquisicaoItem == 0)
-          {
-            var compra = await _servicoCompraItem.ConsultarUltimaCompra(detalhe.IdSKU);
-            detalhe.CustoAquisicaoItem = compra.ValorUnitario;
-          }
-        }
 
-        detalhe.SKU = sku;
-
-        TratarCusto(ref detalhe);
-
-        detalhe.SKU = null;
-        detalhe.CustoProducao = null;
+        CalcularValorCusto(ref detalhe, false);
 
         CustoProducaoDetalhe compraItemBD = await _servicoBase.Consultar<CustoProducaoDetalhe>(w => w.Id == detalhe.Id);
         bool novo = compraItemBD == null;
@@ -75,6 +84,20 @@ namespace GerenciadorGeral.application.Servicos
 
     }
 
+    public async Task<ICollection<CustoProducaoDetalheDTO>> AtualizarValoresCusto(Guid IdCustoProducao)
+    {
+      var custoProducao = await _servicoCompraItem.Consultar<CustoProducao>(w => w.Id == IdCustoProducao, i => i.ListaProducaoDetalhe);
+      ICollection<CustoProducaoDetalheDTO> listaTratada = new HashSet<CustoProducaoDetalheDTO>();
+      foreach (var item in custoProducao.ListaProducaoDetalhe)
+      {
+        CustoProducaoDetalheDTO itemClone = _iMapper.Map<CustoProducaoDetalheDTO>(item);
+        CalcularValorCusto(ref itemClone, true);
+        listaTratada.Add(itemClone);
+      }
+
+      return listaTratada;
+    }
+
     private decimal TratarQtdUnidadeMedida(SKUDTO sku)
     {
       switch (sku.CodigoUnidadeMedida)
@@ -91,7 +114,7 @@ namespace GerenciadorGeral.application.Servicos
 
     private void TratarCusto(ref CustoProducaoDetalheDTO detalhe)
     {
-      detalhe.ValorCustoProducao = ((detalhe.CustoAquisicaoItem * detalhe.qtdUtilizada) / TratarQtdUnidadeMedida(detalhe.SKU));
+      detalhe.ValorCustoProducao =  ((detalhe.CustoAquisicaoItem * detalhe.qtdUtilizada) / TratarQtdUnidadeMedida(detalhe.SKU)).Truncar(2);
 
     }
 

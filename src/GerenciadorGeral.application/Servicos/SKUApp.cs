@@ -17,5 +17,11 @@ namespace GerenciadorGeral.application.Servicos
       var listaProdutoInterno = await _servicoBase.Listar<SKU>(w => w.Interno.HasValue && w.Interno.Value);
       return _iMapperBase.Map<ICollection<SKUDTO>>(listaProdutoInterno);
     }
+
+    public async Task<ICollection<SKUDTO>> ListarProdutos(ICollection<Guid> ids)
+    {
+      var listaProdutoInterno = await _servicoBase.Listar<SKU>(w => ids.Contains(w.Id));
+      return _iMapperBase.Map<ICollection<SKUDTO>>(listaProdutoInterno);
+    }
   }
 }
