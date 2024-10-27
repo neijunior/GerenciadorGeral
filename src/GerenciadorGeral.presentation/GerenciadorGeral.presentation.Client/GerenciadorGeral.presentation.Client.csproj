@@ -18,4 +18,9 @@
     <ProjectReference Include="..\..\GerenciadorGeral.infra\GerenciadorGeral.infra.IoC\GerenciadorGeral.infra.IoC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\DePara\InsumoSKU\" />
+    <Folder Include="Pages\Insumo\" />
+  </ItemGroup>
+
 </Project>

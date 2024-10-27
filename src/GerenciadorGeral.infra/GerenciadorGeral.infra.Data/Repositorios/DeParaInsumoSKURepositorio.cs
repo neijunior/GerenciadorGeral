@@ -4,9 +4,9 @@ using GerenciadorGeral.infra.Data.Contextos;
 
 namespace GerenciadorGeral.infra.Data.Repositorios
 {
-  public class MarcaRepositorio : RepositorioBase<Marca>, IMarcaRepositorio
+  public class DeParaInsumoSKURepositorio : RepositorioBase<DeParaInsumoSKU>, IDeParaInsumoSKURepositorio
   {
-    public MarcaRepositorio(Contexto context) : base(context)
+    public DeParaInsumoSKURepositorio(Contexto context) : base(context)
     {
     }
   }

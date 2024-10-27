@@ -19,6 +19,8 @@ namespace GerenciadorGeral.infra.IoC
       svcCollection.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
       svcCollection.AddScoped<ICustoProducaoRepositorio, CustoProducaoRepositorio>();
       svcCollection.AddScoped<ICustoProducaoDetalheRepositorio, CustoProducaoDetalheRepositorio>();
+      svcCollection.AddScoped<IInsumoRepositorio, InsumoRepositorio>();
+      svcCollection.AddScoped<IDeParaInsumoSKURepositorio, DeParaInsumoSKURepositorio>();
     }
 
   }
