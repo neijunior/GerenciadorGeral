@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20241027200008_AlterTable_27102024_1659")]
+    partial class AlterTable_27102024_1659
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,87 +89,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.ToTable("CompraItem", "dbo");
                 });
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CustoProducao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<DateTime>("DataCalculo")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("IdSKU")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdUsuario")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Observacao")
-                        .HasColumnType("varchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdSKU");
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("CustoProducao", "dbo");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CustoProducaoDetalhe", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<decimal>("CustoAquisicaoItem")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<Guid>("IdCustoProducao")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdSKU")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("ValorCustoProducao")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.Property<decimal>("qtdUtilizada")
-                        .HasColumnType("decimal(16,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdCustoProducao");
-
-                    b.HasIndex("IdSKU");
-
-                    b.ToTable("CustoProducaoDetalhe", "dbo");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.DeParaInsumoSKU", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<Guid>("IdInsumo")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdSKU")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdInsumo");
-
-                    b.HasIndex("IdSKU");
-
-                    b.ToTable("DeParaInsumoSKU", "dbo");
-                });
-
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Fornecedor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -184,7 +106,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("NomeFantasia")
-                        .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.Property<string>("RazaoSocial")
@@ -194,22 +115,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fornecedor", "dbo");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Insumo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("varchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Insumo", "dbo");
                 });
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Marca", b =>
@@ -395,63 +300,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.Navigation("SKU");
                 });
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CustoProducao", b =>
-                {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.SKU", "SKU")
-                        .WithMany("ListaCustoProducao")
-                        .HasForeignKey("IdSKU")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GerenciadorGeral.domain.Entidades.Usuario", "Usuario")
-                        .WithMany("CustoProducao")
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SKU");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CustoProducaoDetalhe", b =>
-                {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.CustoProducao", "CustoProducao")
-                        .WithMany("ListaProducaoDetalhe")
-                        .HasForeignKey("IdCustoProducao")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GerenciadorGeral.domain.Entidades.SKU", "SKU")
-                        .WithMany("ListaCustoProducaoDetalhe")
-                        .HasForeignKey("IdSKU")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CustoProducao");
-
-                    b.Navigation("SKU");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.DeParaInsumoSKU", b =>
-                {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.Insumo", "Insumo")
-                        .WithMany("ListaDeParaInsumoSKU")
-                        .HasForeignKey("IdInsumo")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("GerenciadorGeral.domain.Entidades.SKU", "SKU")
-                        .WithMany("ListaDeParaInsumoSKU")
-                        .HasForeignKey("IdSKU")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Insumo");
-
-                    b.Navigation("SKU");
-                });
-
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
                 {
                     b.HasOne("GerenciadorGeral.domain.Entidades.UnidadeMedida", "UnidadeMedida")
@@ -476,19 +324,9 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.Navigation("ListaItens");
                 });
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.CustoProducao", b =>
-                {
-                    b.Navigation("ListaProducaoDetalhe");
-                });
-
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Fornecedor", b =>
                 {
                     b.Navigation("Compras");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Insumo", b =>
-                {
-                    b.Navigation("ListaDeParaInsumoSKU");
                 });
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Marca", b =>
@@ -498,23 +336,12 @@ namespace GerenciadorGeral.infra.Data.Migrations
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
                 {
-                    b.Navigation("ListaCustoProducao");
-
-                    b.Navigation("ListaCustoProducaoDetalhe");
-
-                    b.Navigation("ListaDeParaInsumoSKU");
-
                     b.Navigation("ListaItens");
                 });
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.UnidadeMedida", b =>
                 {
                     b.Navigation("SKUs");
-                });
-
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Usuario", b =>
-                {
-                    b.Navigation("CustoProducao");
                 });
 #pragma warning restore 612, 618
         }

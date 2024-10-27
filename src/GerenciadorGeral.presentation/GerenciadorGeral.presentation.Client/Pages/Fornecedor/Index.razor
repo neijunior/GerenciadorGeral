@@ -11,55 +11,56 @@
 <a href="/Fornecedor/Editar" class="btn btn-sucess">Criar</a>
 
 <table class="table table-responsive table-striped">
-    <thead>
+  <thead>
+    <tr>
+      <th>CPF/CNPJ</th>
+      <th>Razão Social</th>
+      <th>Nome Fantasia</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (listaFornecedores != null && listaFornecedores.Count() > 0)
+    {
+      foreach (var item in listaFornecedores)
+      {
         <tr>
-            <th>Nome</th>
-            <th>Unidade de Medida</th>
-            <th>Ações</th>
+          <td>@item.CpfCnpj.FormatarCpfCnpj()</td>
+          <td>@item.RazaoSocial</td>
+          <td>@item.NomeFantasia</td>
+          <td>
+            <a href="/Fornecedor/Editar/@item.Id" class="btn btn-primary">Editar</a>
+            <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
+          </td>
         </tr>
-    </thead>
-    <tbody>
-        @if (listaFornecedores != null && listaFornecedores.Count() > 0)
-        {
-            foreach (var item in listaFornecedores)
-            {
-                <tr>
-                    <td>@item.CpfCnpj.FormatarCpfCnpj()</td>
-                    <td>@item.RazaoSocial</td>
-                    <td>
-                        <a href="/Fornecedor/Editar/@item.Id" class="btn btn-primary">Editar</a>
-                        <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
+      }
+    }
+  </tbody>
 </table>
 
 @code {
-    ICollection<FornecedorDTO> listaFornecedores = new HashSet<FornecedorDTO>();
-    protected override async Task OnInitializedAsync()
-    {
-        listaFornecedores = await PopularFornecedores();
-    }
+  ICollection<FornecedorDTO> listaFornecedores = new HashSet<FornecedorDTO>();
+  protected override async Task OnInitializedAsync()
+  {
+    listaFornecedores = await PopularFornecedores();
+  }
 
-    private async Task<ICollection<FornecedorDTO>> PopularFornecedores()
-    {
-        return await fornecedorApp.SelectAll();
-    }
+  private async Task<ICollection<FornecedorDTO>> PopularFornecedores()
+  {
+    return await fornecedorApp.SelectAll();
+  }
 
-    public async Task Delete(Guid Id)
-    {
-        bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o Fornecedor?");
-        if (!confirma)
-            return;
+  public async Task Delete(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir o Fornecedor?");
+    if (!confirma)
+      return;
 
-        var sku = await fornecedorApp.SelectById(Id);
+    var sku = await fornecedorApp.SelectById(Id);
 
-        await fornecedorApp.Delete(sku.Id);
+    await fornecedorApp.Delete(sku.Id);
 
-        listaFornecedores = await PopularFornecedores();
+    listaFornecedores = await PopularFornecedores();
 
-        StateHasChanged();
-    }
+    StateHasChanged();
+  }
 }

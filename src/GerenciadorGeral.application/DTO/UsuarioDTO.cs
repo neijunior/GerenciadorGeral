@@ -6,6 +6,6 @@ namespace GerenciadorGeral.application.DTO
   {
     public string Nome { get; set; }
     public string Email { get; set; }
-    public virtual ICollection<CustoProducao> CustoProducao { get; set; }
+    //public virtual ICollection<CustoProducao> CustoProducao { get; set; }
   }
 }

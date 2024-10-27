@@ -16,9 +16,11 @@ namespace GerenciadorGeral.infra.Data.Mapeamentos
       base.Configure(builder);
       builder.ToTable("CustoProducaoDetalhe", "dbo");
 
-      builder.HasOne(c => c.CustoProducao).WithMany(c => c.ListaProducaoDetalhe).HasForeignKey(c => c.IdCustoProducao);
-      builder.HasOne(c => c.SKU).WithMany(c => c.ListaCustoProducaoDetalhe).HasForeignKey(c => c.IdSKU);
+      builder.Property(c => c.IdCustoProducao).IsRequired();
+      builder.Property(c => c.IdSKU).IsRequired();
 
+      builder.HasOne(c => c.CustoProducao).WithMany(c => c.ListaProducaoDetalhe).HasForeignKey(c => c.IdCustoProducao);
+      builder.HasOne(c => c.SKU).WithMany(c => c.ListaCustoProducaoDetalhe).HasForeignKey(c => c.IdSKU).OnDelete(DeleteBehavior.Restrict);
     }
   }
 }

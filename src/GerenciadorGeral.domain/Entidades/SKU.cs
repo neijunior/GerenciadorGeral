@@ -13,5 +13,6 @@
     public virtual ICollection<CustoProducao> ListaCustoProducao { get; set; }
     public virtual ICollection<CustoProducaoDetalhe> ListaCustoProducaoDetalhe { get; set; }
     public bool? Interno { get; set; }
+    public virtual ICollection<DeParaInsumoSKU> ListaDeParaInsumoSKU { get; set; }
   }
 }

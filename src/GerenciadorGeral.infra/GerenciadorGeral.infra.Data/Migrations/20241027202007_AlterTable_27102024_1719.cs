@@ -6,39 +6,32 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_TablesCustoProducao_24102024_1813 : Migration
+    public partial class AlterTable_27102024_1719 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Usuario",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Email = table.Column<string>(type: "varchar(200)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuario", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "CustoProducao",
                 schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NomeItemProduzido = table.Column<string>(type: "varchar(200)", nullable: false),
+                    IdSKU = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DataCalculo = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdUsuario = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Observacao = table.Column<string>(type: "varchar(200)", nullable: false)
+                    Observacao = table.Column<string>(type: "varchar(200)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CustoProducao", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustoProducao_SKU_IdSKU",
+                        column: x => x.IdSKU,
+                        principalSchema: "dbo",
+                        principalTable: "SKU",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CustoProducao_Usuario_IdUsuario",
                         column: x => x.IdUsuario,
@@ -80,6 +73,12 @@ namespace GerenciadorGeral.infra.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustoProducao_IdSKU",
+                schema: "dbo",
+                table: "CustoProducao",
+                column: "IdSKU");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustoProducao_IdUsuario",
                 schema: "dbo",
                 table: "CustoProducao",
@@ -107,10 +106,6 @@ namespace GerenciadorGeral.infra.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "CustoProducao",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "Usuario",
                 schema: "dbo");
         }
     }

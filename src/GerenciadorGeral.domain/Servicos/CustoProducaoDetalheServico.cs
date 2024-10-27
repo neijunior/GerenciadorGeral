@@ -14,8 +14,9 @@ namespace GerenciadorGeral.domain.Servicos
 
     public async Task<CustoProducaoDetalhe> ConsultarUltimaCompra(string codigoSKU)
     {
-      var item = await _repositorio.ConsultarUltimo<CustoProducaoDetalhe>(w => w.SKU.Codigo == codigoSKU, i => i.SKU);
-      return item;
+      //var item = await _repositorio.ConsultarUltimo<CustoProducaoDetalhe>(w => w.SKU.Codigo == codigoSKU, i => i.SKU);
+      //return item;
+      return null;
     }
   }
 }
