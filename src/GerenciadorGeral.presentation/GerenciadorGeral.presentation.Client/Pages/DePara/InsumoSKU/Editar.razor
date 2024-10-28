@@ -1,0 +1,70 @@
+﻿@page "/DePara/InsumoSKU/Editar/{id?}"
+
+@using Formatacao;
+@using GerenciadorGeral.application.DTO
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.IDeParaInsumoSKUApp deparaApp;
+@inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
+@inject GerenciadorGeral.application.Interfaces.IInsumoApp insumoApp;
+@rendermode InteractiveAuto
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">Criar Insumo</div>
+        <div class="card-body">
+
+          <EditForm Model="@deParaModel" OnValidSubmit="EditarDePara" FormName="DePara">
+
+            <div class="form-group mb-3">
+              <label for="sku">SKU</label>
+              <InputSelect id="idSKU" @bind-Value="deParaModel.IdSKU" class="form-control selectpicker">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaSKU)
+                {
+                  <option value="@item.Id">@item.Nome</option>
+                }
+              </InputSelect>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="Insumo">Insumo</label>
+              <InputSelect id="idInsumo" @bind-Value="deParaModel.IdInsumo" class="form-control selectpicker">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaInsumo)
+                {
+                  <option value="@item.Id">@item.Nome</option>
+                }
+              </InputSelect>
+            </div>
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </EditForm>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+
+  public DeParaInsumoSKUDTO deParaModel { get; set; } = new();
+  public ICollection<SKUDTO> ListaSKU { get; set; }
+  public ICollection<InsumoDTO> ListaInsumo { get; set; }
+
+  [Parameter] public string id { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    deParaModel = !string.IsNullOrEmpty(id) ? await deparaApp.Consultar(Guid.Parse(id)) : deParaModel;
+    ListaSKU = await skuApp.Listar(null);
+    ListaInsumo = await insumoApp.Listar();
+  }
+
+  private async Task EditarDePara()
+  {
+    await deparaApp.Salvar(deParaModel);
+    navManager.NavigateTo("/DePara/InsumoSKU/Index");
+  }
+}

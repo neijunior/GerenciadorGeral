@@ -1,0 +1,65 @@
+﻿@page "/DePara/InsumoSKU/Index"
+
+@using Formatacao
+@using GerenciadorGeral.application.DTO
+@inject IJSRuntime JSRuntime;
+@inject GerenciadorGeral.application.Interfaces.IDeParaInsumoSKUApp deParaInsumoSkuApp;
+@rendermode InteractiveAuto
+
+<h3>Fornecedor</h3>
+
+<a href="/DePara/InsumoSKU/Editar" class="btn btn-sucess">Criar</a>
+
+<table class="table table-responsive table-striped">
+  <thead>
+    <tr>
+      <th>SKU</th>
+      <th>Insumo</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (listaDePara != null && listaDePara.Count() > 0)
+    {
+      foreach (var item in listaDePara)
+      {
+        <tr>
+          <td>@item.SKU.Nome</td>
+          <td>@item.Insumo.Nome</td>
+          <td>
+            <a href="/DePara/InsumoSKU/Editar/@item.Id" class="btn btn-primary">Editar</a>
+            <button class="btn btn-danger" @onclick="async () => Delete(item.Id)">Excluir</button>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>
+
+@code {
+  ICollection<DeParaInsumoSKUDTO> listaDePara = new HashSet<DeParaInsumoSKUDTO>();
+  protected override async Task OnInitializedAsync()
+  {
+    listaDePara = await PopularListaDePara();
+  }
+
+  private async Task<ICollection<DeParaInsumoSKUDTO>> PopularListaDePara()
+  {
+    return await deParaInsumoSkuApp.Listar();
+  }
+
+  public async Task Delete(Guid Id)
+  {
+    bool confirma = await JSRuntime.InvokeAsync<bool>("confirm", "Deseja excluir a Marca?");
+    if (!confirma)
+      return;
+
+    var marca = await deParaInsumoSkuApp.Consultar(Id);
+
+    await deParaInsumoSkuApp.Excluir(Id);
+
+    listaDePara = await PopularListaDePara();
+
+    StateHasChanged();
+  }
+}

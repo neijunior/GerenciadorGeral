@@ -1,0 +1,47 @@
+﻿@page "/Insumo/Editar/{id?}"
+
+@using Formatacao;
+@using GerenciadorGeral.application.DTO
+@inject NavigationManager navManager;
+@inject GerenciadorGeral.application.Interfaces.IInsumoApp insumoApp;
+@rendermode InteractiveAuto
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">Criar Insumo</div>
+        <div class="card-body">
+
+          <EditForm Model="@insumoModel" OnValidSubmit="EditarInsumo" FormName="Insumo">
+
+            <div class="form-group mb-3">
+              <label class="form-label">Nome</label>
+              <InputText @bind-Value="insumoModel.Nome" class="form-control"></InputText>
+            </div>
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </EditForm>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+
+  public InsumoDTO insumoModel { get; set; } = new();
+
+  [Parameter] public string id { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    insumoModel = !string.IsNullOrEmpty(id) ? await insumoApp.Consultar(Guid.Parse(id)) : insumoModel;
+  }
+
+  private async Task EditarInsumo()
+  {
+    await insumoApp.Salvar(insumoModel);
+    navManager.NavigateTo("/Insumo/Index");
+  }
+}

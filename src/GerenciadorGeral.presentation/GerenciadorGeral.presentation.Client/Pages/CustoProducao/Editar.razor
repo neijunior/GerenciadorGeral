@@ -115,7 +115,7 @@
 
   protected override async Task OnInitializedAsync()
   {
-    ListaSKU = await skuApp.ListarProdutoInterno();
+    ListaSKU = await skuApp.Listar(true);
     ListaUsuario = await usuarioApp.SelectAll();
     custoProducaoModel = !string.IsNullOrEmpty(id) ? await custoProducaoApp.Consultar(Guid.Parse(id)) : custoProducaoModel;
   }
@@ -125,9 +125,9 @@
     GerenciadorGeral.domain.Entidades.CustoProducao custoBD = new()
       {
         Id = custoProducaoModel.Id,
-        //IdSKU = custoProducaoModel.IdSKU,
+        IdSKU = custoProducaoModel.IdSKU,
         DataCalculo = custoProducaoModel.DataCalculo,
-        //IdUsuario = custoProducaoModel.IdUsuario,
+        IdUsuario = custoProducaoModel.IdUsuario,
         Observacao = custoProducaoModel.Observacao
       };
 

@@ -10,7 +10,7 @@ namespace GerenciadorGeral.application.DTO
   {
     public Guid IdSKU { get; set; }
     public Guid IdInsumo { get; set; }
-    public SKUDTO skuSDTO { get; set; }
-    public InsumoDTO insumoSDTO { get; set; }
+    public SKUDTO SKU { get; set; }
+    public InsumoDTO Insumo { get; set; }
   }
 }

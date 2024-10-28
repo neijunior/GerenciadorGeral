@@ -12,10 +12,10 @@ namespace GerenciadorGeral.application.Servicos
     {
     }
 
-    public async Task<ICollection<SKUDTO>> ListarProdutoInterno()
+    public async Task<ICollection<SKUDTO>> Listar(bool? interno)
     {
-      var listaProdutoInterno = await _servicoBase.Listar<SKU>(w => w.Interno.HasValue && w.Interno.Value);
-      return _iMapperBase.Map<ICollection<SKUDTO>>(listaProdutoInterno);
+      var listaSku = await _servicoBase.Listar<SKU>(w => !interno.HasValue || (w.Interno.HasValue && (w.Interno.Value == interno.Value)));
+      return _iMapperBase.Map<ICollection<SKUDTO>>(listaSku);
     }
 
     public async Task<ICollection<SKUDTO>> ListarProdutos(ICollection<Guid> ids)
