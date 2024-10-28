@@ -20,7 +20,7 @@
         <option value="" class="dropdown-item">Selecione</option>
         @foreach (var sku in ListaSkus)
         {
-            <option value="@sku.Id">@sku.Nome</option>
+            <option value="@sku.Id">@string.Concat(sku.Codigo, " - ", sku.Nome)</option>
         }
       </InputSelect>
     </div>    

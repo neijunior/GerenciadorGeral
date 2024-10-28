@@ -9,5 +9,6 @@ namespace GerenciadorGeral.application.Interfaces
     Task<InsumoDTO> Consultar(Guid Id);
     Task<RetornoDTO> Excluir(Guid Id);
     Task<RetornoDTO> Salvar(InsumoDTO marca);
+    decimal RetornaCustoMedioInsumo(Guid Id);
   }
 }

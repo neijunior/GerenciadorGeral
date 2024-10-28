@@ -25,7 +25,7 @@
                 <option value="" class="dropdown-item">Selecione</option>
                 @foreach (var item in ListaFornecedor)
                 {
-                  <option value="@item.Id">@item.RazaoSocial</option>
+                  <option value="@item.Id">@string.Concat(item.CpfCnpj, " - ", item.NomeFantasia)</option>
                 }
               </InputSelect>
             </div>

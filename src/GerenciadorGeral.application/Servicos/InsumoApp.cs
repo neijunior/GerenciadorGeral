@@ -52,6 +52,11 @@ namespace GerenciadorGeral.application.Servicos
       return this._iMapper.Map<ICollection<InsumoDTO>>(itens);
     }
 
+    public decimal RetornaCustoMedioInsumo(Guid Id)
+    {
+      throw new NotImplementedException();
+    }
+
     public async Task<RetornoDTO> Salvar(InsumoDTO insumo)
     {
       RetornoDTO retorno = new RetornoDTO()

@@ -24,28 +24,28 @@ namespace GerenciadorGeral.application.Servicos
 
     private void CalcularValorCusto(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
     {
-      //var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU).Result);
-      //if (sku != null && sku.Interno)
-      //{
-      //  var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe).Result;
-      //  var item = custoProducao.OrderByDescending(o => o.DataCalculo).FirstOrDefault();
-      //  detalhe.CustoAquisicaoItem = item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao);
-      //}
-      //else
-      //{
-      //  if (detalhe.CustoAquisicaoItem == 0 || atualizarValor)
-      //  {
-      //    var compra = _servicoCompraItem.ConsultarUltimaCompra(detalhe.IdSKU).Result;
-      //    detalhe.CustoAquisicaoItem = compra.ValorUnitario;
-      //  }
-      //}
+      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU).Result);
+      if (sku != null && sku.Interno)
+      {
+        var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe).Result;
+        var item = custoProducao.OrderByDescending(o => o.DataCalculo).FirstOrDefault();
+        detalhe.CustoAquisicaoItem = item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao);
+      }
+      else
+      {
+        if (detalhe.CustoAquisicaoItem == 0 || atualizarValor)
+        {
+          var compra = _servicoCompraItem.ConsultarUltimaCompra(detalhe.IdSKU).Result;
+          detalhe.CustoAquisicaoItem = compra.ValorUnitario;
+        }
+      }
 
-      //detalhe.SKU = sku;
+      detalhe.SKU = sku;
 
-      //TratarCusto(ref detalhe);
+      TratarCusto(ref detalhe);
 
-      //detalhe.SKU = null;
-      //detalhe.CustoProducao = null;
+      detalhe.SKU = null;
+      detalhe.CustoProducao = null;
 
     }
 
@@ -85,18 +85,17 @@ namespace GerenciadorGeral.application.Servicos
     }
 
     public async Task<ICollection<CustoProducaoDetalheDTO>> AtualizarValoresCusto(Guid IdCustoProducao)
-    {
-      return null;
-      //var custoProducao = await _servicoCompraItem.Consultar<CustoProducao>(w => w.Id == IdCustoProducao, i => i.ListaProducaoDetalhe);
-      //ICollection<CustoProducaoDetalheDTO> listaTratada = new HashSet<CustoProducaoDetalheDTO>();
-      //foreach (var item in custoProducao.ListaProducaoDetalhe)
-      //{
-      //  CustoProducaoDetalheDTO itemClone = _iMapper.Map<CustoProducaoDetalheDTO>(item);
-      //  CalcularValorCusto(ref itemClone, true);
-      //  listaTratada.Add(itemClone);
-      //}
+    {      
+      var custoProducao = await _servicoCompraItem.Consultar<CustoProducao>(w => w.Id == IdCustoProducao, i => i.ListaProducaoDetalhe);
+      ICollection<CustoProducaoDetalheDTO> listaTratada = new HashSet<CustoProducaoDetalheDTO>();
+      foreach (var item in custoProducao.ListaProducaoDetalhe)
+      {
+        CustoProducaoDetalheDTO itemClone = _iMapper.Map<CustoProducaoDetalheDTO>(item);
+        CalcularValorCusto(ref itemClone, true);
+        listaTratada.Add(itemClone);
+      }
 
-      //return listaTratada;
+      return listaTratada;
     }
 
     private decimal TratarQtdUnidadeMedida(SKUDTO sku)
