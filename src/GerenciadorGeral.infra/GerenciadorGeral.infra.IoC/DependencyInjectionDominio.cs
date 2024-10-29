@@ -20,7 +20,6 @@ namespace GerenciadorGeral.infra.IoC
       svcCollection.AddScoped<ICustoProducaoServico, CustoProducaoServico>();
       svcCollection.AddScoped<ICustoProducaoDetalheServico, CustoProducaoDetalheServico>();
       svcCollection.AddScoped<IInsumoServico, InsumoServico>();
-      svcCollection.AddScoped<IDeParaInsumoSKUServico, DeParaInsumoSKUServico>();
     }
   }
 }

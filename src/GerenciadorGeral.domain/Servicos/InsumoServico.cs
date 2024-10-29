@@ -13,14 +13,9 @@ namespace GerenciadorGeral.domain.Servicos
       this._repositorio = repositorio;
     }
 
-    //public async Task<Insumo> Consultar(Guid Id)
-    //{
-    //  var compra = await _repositorio.Consultar<Compra>(w => w.Id == Id);
-    //  var itens = await _repositorio.Listar<CompraItem>(w => w.IdCompra == Id, i => i.SKU);
-
-    //  compra.ListaItens = itens;
-
-    //  return compra;
-    //}
+    public async Task<Insumo> Consultar(Guid Id)
+    {
+      return await _repositorio.Consultar<Insumo>(w => w.Id == Id, i => i.ListaSKU);      
+    }
   }
 }

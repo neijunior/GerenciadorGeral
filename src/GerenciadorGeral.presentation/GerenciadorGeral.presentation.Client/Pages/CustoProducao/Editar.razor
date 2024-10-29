@@ -76,6 +76,12 @@
                     </tr>
                   }
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3">Total</td>
+                    <td>@custoProducaoModel.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao).ToString()</td>
+                  </tr> 
+                </tfoot>
               </table>
             }
             <button type="submit" class="btn btn-success">Salvar</button>
@@ -158,6 +164,8 @@
     {
       item.SKU = listaSkuBase.FirstOrDefault(f => f.Id == item.IdSKU);
     }
+
+
   }
 
   public void EditarItem(CustoProducaoDTO i)

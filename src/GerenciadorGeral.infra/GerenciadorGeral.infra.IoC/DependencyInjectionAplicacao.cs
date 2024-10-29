@@ -20,7 +20,6 @@ namespace GerenciadorGeral.infra.IoC
       svcCollection.AddScoped<ICustoProducaoDetalheApp, CustoProducaoDetalheApp>();
       svcCollection.AddScoped<IUsuarioApp, UsuarioApp>();
       svcCollection.AddScoped<IInsumoApp, InsumoApp>();
-      svcCollection.AddScoped<IDeParaInsumoSKUApp, DeParaInsumoSKUApp>();
     }
   }
 }

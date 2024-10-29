@@ -13,18 +13,22 @@ namespace GerenciadorGeral.application.Servicos
     protected readonly ICustoProducaoDetalheServico _servicoCustoProducaoDetalhe;
     protected readonly ICompraItemServico _servicoCompraItem;
     protected readonly ISKUServico _servicoSKU;
+    protected readonly IInsumoServico _servicoInsumo;
     protected readonly IMapper _iMapper;
-    public CustoProducaoDetalheApp(IMapper iMapper, ICustoProducaoDetalheServico servicoCustoProducaoDetalhe, ICompraItemServico servicoCompraItem, ISKUServico servicoSKU) : base(iMapper, servicoCustoProducaoDetalhe)
+    public CustoProducaoDetalheApp(IMapper iMapper, ICustoProducaoDetalheServico servicoCustoProducaoDetalhe, ICompraItemServico servicoCompraItem, 
+                                   ISKUServico servicoSKU, IInsumoServico servicoInsumo) : base(iMapper, servicoCustoProducaoDetalhe)
     {
       this._iMapper = iMapper;
       this._servicoCustoProducaoDetalhe = servicoCustoProducaoDetalhe;
       this._servicoCompraItem = servicoCompraItem;
       this._servicoSKU = servicoSKU;
+      this._servicoInsumo = servicoInsumo;
     }
 
     private void CalcularValorCusto(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
     {
       var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU).Result);
+      var listaSkuInsumo = _servicoInsumo.Consultar(sku.IdInsumo).Result;
       if (sku != null && sku.Interno)
       {
         var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe).Result;
@@ -35,8 +39,8 @@ namespace GerenciadorGeral.application.Servicos
       {
         if (detalhe.CustoAquisicaoItem == 0 || atualizarValor)
         {
-          var compra = _servicoCompraItem.ConsultarUltimaCompra(detalhe.IdSKU).Result;
-          detalhe.CustoAquisicaoItem = compra.ValorUnitario;
+          //var compra = _servicoCompraItem..ConsultarUltimaCompra(detalhe.IdSKU).Result;
+          detalhe.CustoAquisicaoItem = _servicoCompraItem.ConsultarCustoMedioCompraInsumo(sku.IdInsumo).Result;
         }
       }
 

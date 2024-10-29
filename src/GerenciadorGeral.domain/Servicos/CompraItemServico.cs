@@ -7,7 +7,7 @@ namespace GerenciadorGeral.domain.Servicos
   public class CompraItemServico : ServicoBase<CompraItem>, ICompraItemServico
   {
     protected ICompraItemRepositorio _repositorio;
-
+    
 
     public CompraItemServico(ICompraItemRepositorio repositorio) : base(repositorio)
     {
@@ -21,17 +21,28 @@ namespace GerenciadorGeral.domain.Servicos
       return item.OrderByDescending(o => o.Compra.Data).LastOrDefault();
     }
 
-    //public async decimal ConsultarCustoMedioCompra(Guid IdSku)
-    //{      
-    //  var listaSkusInsumo = await _repositorio.Listar<SKU>(w => w.ListaDeParaInsumoSKU.Any(a => a.IdSKU == IdSku));
+    public async Task<decimal> ConsultarCustoMedioCompraInsumo(Guid IdInsumo)
+    {
+      var listaSkusInsumo = await _repositorio.Listar<CompraItem>(w => w.SKU.IdInsumo == IdInsumo, i => i.SKU);
 
-    //  var idsSku = listaSkusInsumo.Select(s => s.Id).ToArray();
+      var listaTratada = listaSkusInsumo.Select(s => new { QtdComprada = TratarQtd(s.SKU) * s.Quantidade, ValorTotal = s.ValorTotal }).ToList(); 
 
-    //  var lista = await _repositorio.Listar<CompraItem>(w => idsSku.Contains(w.IdSku));
+      return listaTratada.Sum(su => su.ValorTotal) / listaTratada.Sum(su => su.QtdComprada);
+    }
 
-    //  return 0.0D;
-    //  //return await _repositorio.Listar<CompraItem>(w => w.IdCompra == IdCompra);
-    //}
 
+    private decimal TratarQtd(SKU sku)
+    {
+      switch (sku.CodigoUnidadeMedida)
+      {
+        case "G":
+          sku.Quantidade = (sku.Quantidade / 1000);
+          break;
+        default:
+          break;
+      }
+
+      return sku.Quantidade;
+    }
   }
 }

@@ -5,6 +5,6 @@ namespace GerenciadorGeral.domain.Interfaces.Servicos
   public interface ICompraItemServico : IServicoBase<CompraItem>
   {
     Task<CompraItem> ConsultarUltimaCompra(Guid idSku);
-    //decimal ConsultarCustoMedioCompra(Guid IdSku);
+    Task<decimal> ConsultarCustoMedioCompraInsumo(Guid IdInsumo);
   }
 }

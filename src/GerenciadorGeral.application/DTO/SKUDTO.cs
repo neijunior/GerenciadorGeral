@@ -13,5 +13,6 @@ namespace GerenciadorGeral.application.DTO
     public Guid IdMarca { get; set; }
     public string NomeMarca { get; set; }
     public bool Interno { get; set; }
+    public Guid IdInsumo { get; set; }
   }
 }

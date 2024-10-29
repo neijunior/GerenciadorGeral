@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20241029195543_AlterTable_29102024_1650")]
+    partial class AlterTable_29102024_1650
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,10 +258,13 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("CodigoUnidadeMedida");
 
-                    b.Property<Guid?>("IdInsumo")
+                    b.Property<Guid>("IdInsumo")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("IdMarca")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("InsumoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("Interno")
@@ -277,9 +283,9 @@ namespace GerenciadorGeral.infra.Data.Migrations
 
                     b.HasIndex("CodigoUnidadeMedida");
 
-                    b.HasIndex("IdInsumo");
-
                     b.HasIndex("IdMarca");
+
+                    b.HasIndex("InsumoId");
 
                     b.ToTable("SKU", "dbo");
                 });
@@ -424,15 +430,15 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GerenciadorGeral.domain.Entidades.Insumo", "Insumo")
-                        .WithMany("ListaSKU")
-                        .HasForeignKey("IdInsumo");
-
                     b.HasOne("GerenciadorGeral.domain.Entidades.Marca", "Marca")
                         .WithMany("SKUs")
                         .HasForeignKey("IdMarca")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("GerenciadorGeral.domain.Entidades.Insumo", "Insumo")
+                        .WithMany("ListaSKU")
+                        .HasForeignKey("InsumoId");
 
                     b.Navigation("Insumo");
 

@@ -7,6 +7,7 @@
 @inject GerenciadorGeral.application.Interfaces.ISKUApp skuApp;
 @inject GerenciadorGeral.application.Interfaces.IUnidadeMedidaApp unidadeMedidaApp;
 @inject GerenciadorGeral.application.Interfaces.IMarcaApp marcaApp;
+@inject GerenciadorGeral.application.Interfaces.IInsumoApp insumoApp;
 @rendermode InteractiveServer
 
 <div class="container">
@@ -63,6 +64,18 @@
             </div>
 
             <div class="form-group mb-3">
+              <label for="skuIdMarca">Insumo</label>
+              <InputSelect id="skuIdInsumo" @bind-Value="skuModel.IdInsumo">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaInsumos)
+                {
+                  <option value="@item.Id">@item.Nome</option>
+                }
+              </InputSelect>
+              <ValidationMessage For="()=>skuModel.IdInsumo"></ValidationMessage>
+            </div>
+
+            <div class="form-group mb-3">
               <label class="form-label">Interno</label>
               <InputCheckbox @bind-Value="skuModel.Interno"></InputCheckbox>
             </div>
@@ -78,14 +91,16 @@
 @code {
 
   public SKUDTO skuModel { get; set; } = new();
-  public ICollection<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; }
+  public ICollection<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; } 
   public ICollection<Marca> ListaMarcas { get; set; }
+  public ICollection<InsumoDTO> ListaInsumos { get; set; }
 
   [Parameter] public string id { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
     ListaMarcas = await marcaApp.Listar();
+    ListaInsumos = await insumoApp.Listar();
     ListaUnidadeMedida = await unidadeMedidaApp.SelectAll();
     skuModel = !string.IsNullOrEmpty(id) ? await skuApp.SelectById(Guid.Parse(id)) : skuModel;
   }
@@ -102,7 +117,8 @@
         CodigoUnidadeMedida = skuModel.CodigoUnidadeMedida,
         Quantidade = skuModel.Quantidade,
         IdMarca = skuModel.IdMarca,
-        Interno = skuModel.Interno
+        Interno = skuModel.Interno,
+        IdInsumo = skuModel.IdInsumo
       };
 
     if (string.IsNullOrEmpty(id))

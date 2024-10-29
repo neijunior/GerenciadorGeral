@@ -15,6 +15,7 @@ namespace GerenciadorGeral.infra.Data.Mapeamentos
 
       builder.HasOne(c => c.Marca).WithMany(c => c.SKUs).HasForeignKey(c => c.IdMarca);
       builder.HasOne(c => c.UnidadeMedida).WithMany(c => c.SKUs).HasForeignKey(c => c.CodigoUnidadeMedida);
+      builder.HasOne(c => c.Insumo).WithMany(c => c.ListaSKU).HasForeignKey(c => c.IdInsumo);
     }
   }
 }
