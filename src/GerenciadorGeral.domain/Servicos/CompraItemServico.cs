@@ -1,13 +1,14 @@
 ﻿using GerenciadorGeral.domain.Entidades;
 using GerenciadorGeral.domain.Interfaces.Repositorios;
 using GerenciadorGeral.domain.Interfaces.Servicos;
+using Formatacao;
 
 namespace GerenciadorGeral.domain.Servicos
 {
   public class CompraItemServico : ServicoBase<CompraItem>, ICompraItemServico
   {
     protected ICompraItemRepositorio _repositorio;
-    
+
 
     public CompraItemServico(ICompraItemRepositorio repositorio) : base(repositorio)
     {
@@ -23,11 +24,14 @@ namespace GerenciadorGeral.domain.Servicos
 
     public async Task<decimal> ConsultarCustoMedioCompraInsumo(Guid IdInsumo)
     {
-      var listaSkusInsumo = await _repositorio.Listar<CompraItem>(w => w.SKU.IdInsumo == IdInsumo, i => i.SKU);
+      var listaSkusInsumo = _repositorio.Listar<CompraItem>(w => w.SKU.IdInsumo == IdInsumo, i => i.SKU).Result
+                            .Select(s => new
+                            {
+                              QtdComprada = TratarQtd(s.SKU) * s.Quantidade,
+                              ValorTotal = s.ValorTotal
+                            }).ToList();
 
-      var listaTratada = listaSkusInsumo.Select(s => new { QtdComprada = TratarQtd(s.SKU) * s.Quantidade, ValorTotal = s.ValorTotal }).ToList(); 
-
-      return listaTratada.Sum(su => su.ValorTotal) / listaTratada.Sum(su => su.QtdComprada);
+      return (listaSkusInsumo.Sum(su => su.ValorTotal) / listaSkusInsumo.Sum(su => su.QtdComprada)).Truncar(2);
     }
 
 

@@ -71,8 +71,8 @@
                     <tr>
                       <td>@item.SKU.Nome</td>
                       <td>@item.qtdUtilizada.ToString()</td>
-                      <td>@item.CustoAquisicaoItem.ToString()</td>                      
-                      <td>@item.ValorCustoProducao.ToString()</td>                      
+                      <td>@item.CustoAquisicaoItem.ToString("#,##0.00")</td>
+                      <td>@item.ValorCustoProducao.ToString("#,##0.00")</td>
                     </tr>
                   }
                 </tbody>
@@ -164,8 +164,6 @@
     {
       item.SKU = listaSkuBase.FirstOrDefault(f => f.Id == item.IdSKU);
     }
-
-
   }
 
   public void EditarItem(CustoProducaoDTO i)

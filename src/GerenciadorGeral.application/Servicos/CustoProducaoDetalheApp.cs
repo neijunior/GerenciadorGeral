@@ -102,23 +102,24 @@ namespace GerenciadorGeral.application.Servicos
       return listaTratada;
     }
 
-    private decimal TratarQtdUnidadeMedida(SKUDTO sku)
+    private decimal TratarQtdUnidadeMedida(string unidadeMedida)
     {
-      switch (sku.CodigoUnidadeMedida)
+      decimal valor = 1;
+      switch (unidadeMedida)
       {
         case "G":
-          sku.Quantidade = sku.Quantidade / 1000;
+          valor = 1000;
           break;
         default:
           break;
       }
 
-      return sku.Quantidade;
+      return valor;
     }
 
     private void TratarCusto(ref CustoProducaoDetalheDTO detalhe)
     {
-      detalhe.ValorCustoProducao =  ((detalhe.CustoAquisicaoItem * detalhe.qtdUtilizada) / TratarQtdUnidadeMedida(detalhe.SKU)).Truncar(2);
+      detalhe.ValorCustoProducao = ((detalhe.CustoAquisicaoItem * detalhe.qtdUtilizada)).Truncar(2);// / TratarQtdUnidadeMedida(detalhe.SKU.CodigoUnidadeMedida)).Truncar(2);
 
     }
 
