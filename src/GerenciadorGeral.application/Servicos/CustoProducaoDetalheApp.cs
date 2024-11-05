@@ -123,5 +123,10 @@ namespace GerenciadorGeral.application.Servicos
 
     }
 
+    public async Task<CustoProducaoDetalhe> PopularDetalhe(CustoProducaoDetalheDTO custoProducaoDetalhe)
+    {
+      return _iMapper.Map<CustoProducaoDetalhe>(custoProducaoDetalhe);
+
+    }
   }
 }

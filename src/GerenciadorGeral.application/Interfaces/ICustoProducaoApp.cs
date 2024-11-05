@@ -8,5 +8,6 @@ namespace GerenciadorGeral.application.Interfaces
     Task<CustoProducaoDTO> Consultar(Guid Id);
     Task<ICollection<CustoProducaoDetalheDTO>> ConsultaCustoPadrao(ICollection<CustoProducaoDetalheDTO> listaItens);
     Task<ICollection<CustoProducaoDTO>> Listar();
+    Task<RetornoDTO> Salvar(CustoProducaoDTO custoProducao);
   }
 }

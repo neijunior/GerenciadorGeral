@@ -61,7 +61,7 @@
                   <tr>
                     <th>SKU</th>
                     <th>Qtd. Utilizada</th>
-                    <th>Custo Aquisição</th>                    
+                    <th>Custo Aquisição</th>
                     <th>Valor Custo</th>
                   </tr>
                 </thead>
@@ -80,7 +80,7 @@
                   <tr>
                     <td colspan="3">Total</td>
                     <td>@custoProducaoModel.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao).ToString()</td>
-                  </tr> 
+                  </tr>
                 </tfoot>
               </table>
             }
@@ -126,24 +126,39 @@
     custoProducaoModel = !string.IsNullOrEmpty(id) ? await custoProducaoApp.Consultar(Guid.Parse(id)) : custoProducaoModel;
   }
 
+  private ICollection<GerenciadorGeral.domain.Entidades.CustoProducaoDetalhe> PopularDetalhes(ICollection<CustoProducaoDetalheDTO> ListaProducaoDetalhe)
+  {
+    ICollection<GerenciadorGeral.domain.Entidades.CustoProducaoDetalhe> lista = new HashSet<GerenciadorGeral.domain.Entidades.CustoProducaoDetalhe>();
+    foreach (var item in ListaProducaoDetalhe)
+    {
+      lista.Add(custoProducaoDetalheApp.PopularDetalhe(item).Result);
+    }
+
+    return lista;
+  }
+
   private async Task EditarCusto()
   {
-    GerenciadorGeral.domain.Entidades.CustoProducao custoBD = new()
-      {
-        Id = custoProducaoModel.Id,
-        IdSKU = custoProducaoModel.IdSKU,
-        DataCalculo = custoProducaoModel.DataCalculo,
-        IdUsuario = custoProducaoModel.IdUsuario,
-        Observacao = custoProducaoModel.Observacao
-      };
 
-    if (string.IsNullOrEmpty(id))
-    {
-      custoBD.Id = Guid.NewGuid();
-      await custoProducaoApp.Insert(custoBD);
-    }
-    else
-      await custoProducaoApp.Update(custoBD);
+    // GerenciadorGeral.domain.Entidades.CustoProducao custoBD = new()
+    //   {
+    //     Id = custoProducaoModel.Id,
+    //     IdSKU = custoProducaoModel.IdSKU,
+    //     DataCalculo = custoProducaoModel.DataCalculo,
+    //     IdUsuario = custoProducaoModel.IdUsuario,
+    //     Observacao = custoProducaoModel.Observacao,
+    //     ListaProducaoDetalhe = PopularDetalhes(custoProducaoModel.ListaProducaoDetalhe)
+    //   };
+
+    // if (string.IsNullOrEmpty(id))
+    // {
+    //   custoBD.Id = Guid.NewGuid();
+    //   await custoProducaoApp.Insert(custoBD);
+    // }
+    // else
+    //   await custoProducaoApp.Update(custoBD);
+
+    await custoProducaoApp.Salvar(custoProducaoModel);
 
     navManager.NavigateTo("/CustoProducao/Index");
   }
@@ -156,7 +171,7 @@
   }
 
   public async void AtualizarValoresCusto(Guid IdCustoProducao)
-  {    
+  {
     var lista = await custoProducaoDetalheApp.AtualizarValoresCusto(IdCustoProducao);
     var listaSkuBase = await skuApp.ListarProdutos(lista.Select(s => s.IdSKU).ToList());
     custoProducaoModel.ListaProducaoDetalhe = lista;
@@ -183,7 +198,7 @@
       default:
         break;
     }
-    
+
   }
 
   public async Task ExcluirItem(Guid Id)

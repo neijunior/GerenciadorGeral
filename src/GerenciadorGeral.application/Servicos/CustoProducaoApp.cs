@@ -9,13 +9,15 @@ namespace GerenciadorGeral.application.Servicos
   public class CustoProducaoApp : AppBase<CustoProducao, CustoProducaoDTO>, ICustoProducaoApp
   {
     protected readonly ICustoProducaoServico _servicoCustoProducao;
+    protected readonly ICustoProducaoDetalheServico _servicoCustoProducaoDetalhe;
     protected readonly ICompraItemServico _servicoCompraItem;
     protected readonly IMapper _iMapper;
-    public CustoProducaoApp(IMapper iMapper, ICustoProducaoServico servicoCustoProducao, ICompraItemServico servicoCompraItem) : base(iMapper, servicoCustoProducao)
+    public CustoProducaoApp(IMapper iMapper, ICustoProducaoServico servicoCustoProducao, ICompraItemServico servicoCompraItem, ICustoProducaoDetalheServico servicoCustoProducaoDetalhe) : base(iMapper, servicoCustoProducao)
     {
       this._iMapper = iMapper;
       this._servicoCustoProducao = servicoCustoProducao;
       this._servicoCompraItem = servicoCompraItem;
+      this._servicoCustoProducaoDetalhe = servicoCustoProducaoDetalhe;
     }
 
     public async Task<ICollection<CustoProducaoDetalheDTO>> ConsultaCustoPadrao(ICollection<CustoProducaoDetalheDTO> listaItens)
@@ -57,6 +59,49 @@ namespace GerenciadorGeral.application.Servicos
       return _iMapper.Map<ICollection<CustoProducaoDTO>>(lista);
 
     }
-    
+
+    public async Task<RetornoDTO> Salvar(CustoProducaoDTO custoProducao)
+    {
+      RetornoDTO retorno = new RetornoDTO()
+      {
+        Mensagem = "Salvo com sucesso",
+        Sucesso = true
+      };
+
+      try
+      {
+        CustoProducao cp = this._servicoCustoProducao.Consultar<CustoProducao>(w => w.Id == custoProducao.Id, i => i.ListaProducaoDetalhe).Result;
+        
+
+        bool novo = (cp == null);
+
+        cp = _iMapper.Map<CustoProducao>(custoProducao);
+
+        if (novo)
+        {
+          
+          cp.Id = Guid.NewGuid();
+          this._servicoCustoProducao.Insert(cp);
+        }
+        else
+        {
+          _servicoCustoProducaoDetalhe.SalvarLista(cp.ListaProducaoDetalhe);
+          cp.ListaProducaoDetalhe = null;
+          cp.SKU = null;
+
+          this._servicoCustoProducao.Update(cp);
+        }
+
+
+      }
+      catch (Exception ex)
+      {
+        retorno.Mensagem = ex.Message;
+        retorno.Sucesso = false;
+      }
+
+      return retorno;
+    }
+
   }
 }

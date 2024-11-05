@@ -7,5 +7,6 @@ namespace GerenciadorGeral.application.Interfaces
   {
     Task<RetornoDTO> Salvar(CustoProducaoDetalheDTO detalhe);
     Task<ICollection<CustoProducaoDetalheDTO>> AtualizarValoresCusto(Guid IdCustoProducao);
+    Task<CustoProducaoDetalhe> PopularDetalhe(CustoProducaoDetalheDTO custoProducaoDetalhe);
   }
 }
