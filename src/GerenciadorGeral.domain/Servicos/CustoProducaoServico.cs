@@ -17,7 +17,7 @@ namespace GerenciadorGeral.domain.Servicos
     public async Task<CustoProducao> Consultar(Guid Id)
     {
       var custo = await _repositorio.Consultar<CustoProducao>(w => w.Id == Id);
-      var itens = await _repositorio.Listar<CustoProducaoDetalhe>(w => w.IdCustoProducao == Id, i => i.SKU);
+      var itens = await _repositorio.Listar<CustoProducaoDetalhe>(w => w.IdCustoProducao == Id, i => i.Insumo);
 
       custo.ListaProducaoDetalhe = itens;
 
@@ -31,15 +31,15 @@ namespace GerenciadorGeral.domain.Servicos
                                                            i => i.SKU,
                                                            i => i.ListaProducaoDetalhe);
 
-      var codigoSkus = itens.SelectMany(sm => sm.ListaProducaoDetalhe.Select(s => s.IdSKU)).ToList();
-      if (codigoSkus != null && codigoSkus.Count() > 0)
+      var idsInsumos = itens.SelectMany(sm => sm.ListaProducaoDetalhe.Select(s => s.IdInsumo)).ToList();
+      if (idsInsumos != null && idsInsumos.Count() > 0)
       {
-        var skus = await _repositorio.Listar<SKU>(w => codigoSkus.Contains(w.Id));
+        var skus = await _repositorio.Listar<Insumo>(w => idsInsumos.Contains(w.Id));
         foreach (var cp in itens)
         {
           foreach (var det in cp.ListaProducaoDetalhe)
           {
-            det.SKU = skus.FirstOrDefault(w => w.Id == det.IdSKU);
+            det.Insumo = skus.FirstOrDefault(w => w.Id == det.IdInsumo);
           }
         }
       }

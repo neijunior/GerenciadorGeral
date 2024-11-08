@@ -4,6 +4,7 @@ using GerenciadorGeral.infra.Data.Contextos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GerenciadorGeral.infra.Data.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ContextoModelSnapshot : ModelSnapshot
+    [Migration("20241108213647_AlterTable_08112024_1835")]
+    partial class AlterTable_08112024_1835
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,20 +130,25 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.Property<Guid>("IdCustoProducao")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IdInsumo")
+                    b.Property<Guid?>("IdInsumo")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("QuantidadeUtilizada")
-                        .HasColumnType("decimal(8,4)");
+                    b.Property<Guid?>("IdSKU")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("ValorCustoProducao")
                         .HasColumnType("decimal(16,2)");
+
+                    b.Property<decimal>("qtdUtilizada")
+                        .HasColumnType("decimal(8,4)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IdCustoProducao");
 
                     b.HasIndex("IdInsumo");
+
+                    b.HasIndex("IdSKU");
 
                     b.ToTable("CustoProducaoDetalhe", "dbo");
                 });
@@ -181,20 +189,11 @@ namespace GerenciadorGeral.infra.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("Id");
 
-                    b.Property<string>("CodigoUnidadeMedida")
-                        .IsRequired()
-                        .HasColumnType("varchar(200)");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("UnidadeMedidaCodigo")
-                        .HasColumnType("varchar(5)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UnidadeMedidaCodigo");
 
                     b.ToTable("Insumo", "dbo");
                 });
@@ -417,21 +416,18 @@ namespace GerenciadorGeral.infra.Data.Migrations
                     b.HasOne("GerenciadorGeral.domain.Entidades.Insumo", "Insumo")
                         .WithMany("ListaCustoProducaoDetalhe")
                         .HasForeignKey("IdInsumo")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GerenciadorGeral.domain.Entidades.SKU", "SKU")
+                        .WithMany("ListaCustoProducaoDetalhe")
+                        .HasForeignKey("IdSKU")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CustoProducao");
 
                     b.Navigation("Insumo");
-                });
 
-            modelBuilder.Entity("GerenciadorGeral.domain.Entidades.Insumo", b =>
-                {
-                    b.HasOne("GerenciadorGeral.domain.Entidades.UnidadeMedida", "UnidadeMedida")
-                        .WithMany()
-                        .HasForeignKey("UnidadeMedidaCodigo");
-
-                    b.Navigation("UnidadeMedida");
+                    b.Navigation("SKU");
                 });
 
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
@@ -489,6 +485,8 @@ namespace GerenciadorGeral.infra.Data.Migrations
             modelBuilder.Entity("GerenciadorGeral.domain.Entidades.SKU", b =>
                 {
                     b.Navigation("ListaCustoProducao");
+
+                    b.Navigation("ListaCustoProducaoDetalhe");
 
                     b.Navigation("ListaItens");
                 });

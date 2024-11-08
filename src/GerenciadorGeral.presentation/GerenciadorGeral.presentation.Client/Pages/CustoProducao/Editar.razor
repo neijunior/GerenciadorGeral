@@ -59,7 +59,7 @@
               <table class="table table-responsive table-striped">
                 <thead>
                   <tr>
-                    <th>SKU</th>
+                    <th>Insumo</th>
                     <th>Qtd. Utilizada</th>
                     <th>Custo Aquisição</th>
                     <th>Valor Custo</th>
@@ -69,7 +69,7 @@
                   @foreach (var item in custoProducaoModel.ListaProducaoDetalhe)
                   {
                     <tr>
-                      <td>@item.SKU.Nome</td>
+                      <td>@item.Insumo.Nome</td>
                       <td>@item.qtdUtilizada.ToString()</td>
                       <td>@item.CustoAquisicaoItem.ToString("#,##0.00")</td>
                       <td>@item.ValorCustoProducao.ToString("#,##0.00")</td>
@@ -140,24 +140,6 @@
   private async Task EditarCusto()
   {
 
-    // GerenciadorGeral.domain.Entidades.CustoProducao custoBD = new()
-    //   {
-    //     Id = custoProducaoModel.Id,
-    //     IdSKU = custoProducaoModel.IdSKU,
-    //     DataCalculo = custoProducaoModel.DataCalculo,
-    //     IdUsuario = custoProducaoModel.IdUsuario,
-    //     Observacao = custoProducaoModel.Observacao,
-    //     ListaProducaoDetalhe = PopularDetalhes(custoProducaoModel.ListaProducaoDetalhe)
-    //   };
-
-    // if (string.IsNullOrEmpty(id))
-    // {
-    //   custoBD.Id = Guid.NewGuid();
-    //   await custoProducaoApp.Insert(custoBD);
-    // }
-    // else
-    //   await custoProducaoApp.Update(custoBD);
-
     await custoProducaoApp.Salvar(custoProducaoModel);
 
     navManager.NavigateTo("/CustoProducao/Index");
@@ -173,7 +155,7 @@
   public async void AtualizarValoresCusto(Guid IdCustoProducao)
   {
     var lista = await custoProducaoDetalheApp.AtualizarValoresCusto(IdCustoProducao);
-    var listaSkuBase = await skuApp.ListarProdutos(lista.Select(s => s.IdSKU).ToList());
+    var listaSkuBase = await skuApp.ListarProdutos(lista.Select(s => s.IdSKU.Value).ToList());
     custoProducaoModel.ListaProducaoDetalhe = lista;
     foreach (var item in custoProducaoModel.ListaProducaoDetalhe.Where(w => w.SKU == null).ToList())
     {

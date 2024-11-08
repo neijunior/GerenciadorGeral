@@ -25,8 +25,10 @@ namespace GerenciadorGeral.domain.Servicos
       {
         foreach (var item in lista)
         {
-          CustoProducaoDetalhe det = Consultar<CustoProducaoDetalhe>(w => w.Id == item.Id).Result;
+          CustoProducaoDetalhe det = Consultar<CustoProducaoDetalhe>(w => w.Id == item.Id, i => i.Insumo).Result;
           bool novo = (det == null);
+
+
           if (novo)
           {
             det.Id = Guid.NewGuid();
@@ -35,7 +37,7 @@ namespace GerenciadorGeral.domain.Servicos
           else
           {
             det = item;
-            det.SKU = null;
+            det.Insumo = null;
             det.CustoProducao = null;
             Update(det);
           }

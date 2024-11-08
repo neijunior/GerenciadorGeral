@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\DePara\**" />
+    <Content Remove="Pages\DePara\**" />
+    <EmbeddedResource Remove="Pages\DePara\**" />
+    <None Remove="Pages\DePara\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
   </ItemGroup>
 
@@ -16,10 +23,6 @@
     <ProjectReference Include="..\..\..\..\Utilitario\Formatacao\Formatacao.csproj" />
     <ProjectReference Include="..\..\GerenciadorGeral.application\GerenciadorGeral.application.csproj" />
     <ProjectReference Include="..\..\GerenciadorGeral.infra\GerenciadorGeral.infra.IoC\GerenciadorGeral.infra.IoC.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\DePara\" />
   </ItemGroup>
 
 </Project>

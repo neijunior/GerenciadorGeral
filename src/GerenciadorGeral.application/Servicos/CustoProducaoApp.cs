@@ -27,7 +27,7 @@ namespace GerenciadorGeral.application.Servicos
 
       foreach (var item in listaItens)
       {
-        var ultimaCompra = await _servicoCompraItem.ConsultarUltimaCompra(item.IdSKU);
+        var ultimaCompra = await _servicoCompraItem.ConsultarUltimaCompra(item.IdSKU.Value);
         lista.Add(new CustoProducaoDetalheDTO()
         {
           Id = Guid.NewGuid(),

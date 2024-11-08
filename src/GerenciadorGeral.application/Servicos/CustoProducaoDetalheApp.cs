@@ -27,7 +27,7 @@ namespace GerenciadorGeral.application.Servicos
 
     private void CalcularValorCusto(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
     {
-      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU).Result);
+      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU.Value).Result);
       var listaSkuInsumo = _servicoInsumo.Consultar(sku.IdInsumo).Result;
       if (sku != null && sku.Interno)
       {
@@ -66,7 +66,7 @@ namespace GerenciadorGeral.application.Servicos
 
         CalcularValorCusto(ref detalhe, false);
 
-        CustoProducaoDetalhe compraItemBD = await _servicoBase.Consultar<CustoProducaoDetalhe>(w => w.Id == detalhe.Id);
+        CustoProducaoDetalhe compraItemBD = await _servicoBase.Consultar<CustoProducaoDetalhe>(w => w.Id == detalhe.Id, i => i.Insumo);
         bool novo = compraItemBD == null;
         compraItemBD = _iMapper.Map<CustoProducaoDetalhe>(detalhe);
 

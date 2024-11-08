@@ -11,7 +11,6 @@
     public virtual UnidadeMedida? UnidadeMedida { get; set; }
     public virtual Marca? Marca { get; set; }
     public virtual ICollection<CustoProducao> ListaCustoProducao { get; set; }
-    public virtual ICollection<CustoProducaoDetalhe> ListaCustoProducaoDetalhe { get; set; }
     public bool? Interno { get; set; }
     public Guid? IdInsumo { get; set; }
     public virtual Insumo Insumo { get; set; }
