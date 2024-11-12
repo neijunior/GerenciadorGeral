@@ -10,5 +10,7 @@ namespace GerenciadorGeral.application.DTO
   public class InsumoDTO : BaseDTO
   {
     public string Nome { get; set; }
+    public string CodigoUnidadeMedida { get; set; }
+    public bool ProducaoPropria { get; set; }
   }
 }

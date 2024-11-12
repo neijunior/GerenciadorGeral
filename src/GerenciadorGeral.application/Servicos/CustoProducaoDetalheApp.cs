@@ -5,6 +5,7 @@ using GerenciadorGeral.domain.Entidades;
 using GerenciadorGeral.domain.Interfaces.Servicos;
 using System.Collections.Generic;
 using Formatacao;
+using System.Numerics;
 
 namespace GerenciadorGeral.application.Servicos
 {
@@ -27,11 +28,11 @@ namespace GerenciadorGeral.application.Servicos
 
     private void CalcularValorCusto(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
     {
-      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU.Value).Result);
-      var listaSkuInsumo = _servicoInsumo.Consultar(sku.IdInsumo).Result;
-      if (sku != null && sku.Interno)
+      //var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU.Value).Result);
+      var insumo = _servicoInsumo.Consultar(detalhe.IdInsumo.Value).Result;
+      if (insumo != null && insumo.ProducaoPropria)
       {
-        var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe).Result;
+        var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == insumo.Id, i => i.ListaProducaoDetalhe).Result;
         var item = custoProducao.OrderByDescending(o => o.DataCalculo).FirstOrDefault();
         detalhe.CustoAquisicaoItem = item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao);
       }
@@ -40,11 +41,11 @@ namespace GerenciadorGeral.application.Servicos
         if (detalhe.CustoAquisicaoItem == 0 || atualizarValor)
         {
           //var compra = _servicoCompraItem..ConsultarUltimaCompra(detalhe.IdSKU).Result;
-          detalhe.CustoAquisicaoItem = _servicoCompraItem.ConsultarCustoMedioCompraInsumo(sku.IdInsumo).Result;
+          detalhe.CustoAquisicaoItem = _servicoCompraItem.ConsultarCustoMedioCompraInsumo(insumo.Id).Result;
         }
       }
 
-      detalhe.SKU = sku;
+      //detalhe.SKU = sku;
 
       TratarCusto(ref detalhe);
 

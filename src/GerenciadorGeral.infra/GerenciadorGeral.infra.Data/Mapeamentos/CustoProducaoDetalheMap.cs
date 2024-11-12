@@ -11,7 +11,8 @@ namespace GerenciadorGeral.infra.Data.Mapeamentos
       base.Configure(builder);
       builder.ToTable("CustoProducaoDetalhe", "dbo");
 
-      builder.Property(c => c.IdCustoProducao).IsRequired();      
+      builder.Property(c => c.IdCustoProducao).IsRequired();
+      builder.Property(c => c.IdInsumo).IsRequired();
       builder.Property(c => c.QuantidadeUtilizada).IsRequired().HasColumnType("decimal(8,4)");
 
       builder.HasOne(c => c.CustoProducao).WithMany(c => c.ListaProducaoDetalhe).HasForeignKey(c => c.IdCustoProducao);

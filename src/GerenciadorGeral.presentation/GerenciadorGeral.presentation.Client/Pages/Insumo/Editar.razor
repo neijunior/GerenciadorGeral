@@ -4,6 +4,7 @@
 @using GerenciadorGeral.application.DTO
 @inject NavigationManager navManager;
 @inject GerenciadorGeral.application.Interfaces.IInsumoApp insumoApp;
+@inject GerenciadorGeral.application.Interfaces.IUnidadeMedidaApp unidadeMedidaApp;
 @rendermode InteractiveServer
 
 <div class="container">
@@ -20,6 +21,18 @@
               <InputText @bind-Value="insumoModel.Nome" class="form-control"></InputText>
             </div>
 
+            <div class="form-group mb-3">
+              <label for="insumoUnidadeMedida">Unidade Medida</label>
+              <InputSelect id="insumoUnidadeMedida" @bind-Value="insumoModel.CodigoUnidadeMedida" class="form-control select-picker">
+                <option value="" class="dropdown-item">Selecione</option>
+                @foreach (var item in ListaUnidadeMedida)
+                {
+                  <option value="@item.Codigo">@item.Descricao</option>
+                }
+              </InputSelect>
+              <ValidationMessage For="()=>insumoModel.CodigoUnidadeMedida"></ValidationMessage>
+            </div>
+
             <button type="submit" class="btn btn-success">Salvar</button>
           </EditForm>
         </div>
@@ -31,11 +44,13 @@
 @code {
 
   public InsumoDTO insumoModel { get; set; } = new();
+  public ICollection<UnidadeMedidaDTO> ListaUnidadeMedida { get; set; }
 
   [Parameter] public string id { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
+    ListaUnidadeMedida = await unidadeMedidaApp.SelectAll();
     insumoModel = !string.IsNullOrEmpty(id) ? await insumoApp.Consultar(Guid.Parse(id)) : insumoModel;
   }
 
