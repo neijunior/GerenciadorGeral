@@ -28,13 +28,17 @@ namespace GerenciadorGeral.application.Servicos
 
     private void CalcularValorCustoSKU(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
     {
-      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU.Value).Result);      
+      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU.Value).Result);
       if (sku != null && sku.Interno)
       {
-        var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe).Result;
+        var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe, i => i.SKU).Result;
         var item = custoProducao.OrderByDescending(o => o.DataCalculo).FirstOrDefault();
 
         detalhe.CustoAquisicaoItem = item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao);
+
+        decimal valorProporcional = (item.SKU.Quantidade / TratarQtdUnidadeMedida(item.SKU.CodigoUnidadeMedida)).Truncar(3);
+        detalhe.CustoAquisicaoItem = (detalhe.CustoAquisicaoItem / valorProporcional).Truncar(2);
+        detalhe.SKU = sku;
       }
       else
       {
@@ -122,7 +126,7 @@ namespace GerenciadorGeral.application.Servicos
 
     public async Task<ICollection<CustoProducaoDetalheDTO>> AtualizarValoresCusto(Guid IdCustoProducao)
     {
-      var custoProducao = await _servicoCompraItem.Consultar<CustoProducao>(w => w.Id == IdCustoProducao, i=> i.SKU, i => i.ListaProducaoDetalhe);
+      var custoProducao = await _servicoCompraItem.Consultar<CustoProducao>(w => w.Id == IdCustoProducao, i => i.SKU, i => i.ListaProducaoDetalhe);
       ICollection<CustoProducaoDetalheDTO> listaTratada = new HashSet<CustoProducaoDetalheDTO>();
       foreach (var item in custoProducao.ListaProducaoDetalhe)
       {
