@@ -17,7 +17,7 @@ namespace GerenciadorGeral.domain.Servicos
     public async Task<CustoProducao> Consultar(Guid Id)
     {
       var custo = await _repositorio.Consultar<CustoProducao>(w => w.Id == Id);
-      var itens = await _repositorio.Listar<CustoProducaoDetalhe>(w => w.IdCustoProducao == Id, i => i.Insumo);
+      var itens = await _repositorio.Listar<CustoProducaoDetalhe>(w => w.IdCustoProducao == Id, i => i.Insumo, i => i.SKU);
 
       custo.ListaProducaoDetalhe = itens;
 

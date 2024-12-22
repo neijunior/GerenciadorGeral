@@ -59,7 +59,7 @@
               <table class="table table-responsive table-striped">
                 <thead>
                   <tr>
-                    <th>Insumo</th>
+                    <th>Item</th>
                     <th>Qtd. Utilizada</th>
                     <th>Custo Aquisição</th>
                     <th>Valor Custo</th>
@@ -69,8 +69,8 @@
                   @foreach (var item in custoProducaoModel.ListaProducaoDetalhe)
                   {
                     <tr>
-                      <td>@item.Insumo.Nome</td>
-                      <td>@item.qtdUtilizada.ToString()</td>
+                      <td>@(item.Insumo != null ? item.Insumo.Nome : item.SKU.Nome)</td>
+                      <td>@item.QuantidadeUtilizada.ToString()</td>
                       <td>@item.CustoAquisicaoItem.ToString("#,##0.00")</td>
                       <td>@item.ValorCustoProducao.ToString("#,##0.00")</td>
                     </tr>
@@ -155,12 +155,12 @@
   public async void AtualizarValoresCusto(Guid IdCustoProducao)
   {
     var lista = await custoProducaoDetalheApp.AtualizarValoresCusto(IdCustoProducao);
-    var listaSkuBase = await skuApp.ListarProdutos(lista.Select(s => s.IdSKU.Value).ToList());
+    //var listaSkuBase = await skuApp.ListarProdutos(lista.Select(s => s.IdSKU.Value).ToList());
     custoProducaoModel.ListaProducaoDetalhe = lista;
-    foreach (var item in custoProducaoModel.ListaProducaoDetalhe.Where(w => w.SKU == null).ToList())
-    {
-      item.SKU = listaSkuBase.FirstOrDefault(f => f.Id == item.IdSKU);
-    }
+    // foreach (var item in custoProducaoModel.ListaProducaoDetalhe.Where(w => w.SKU == null).ToList())
+    // {
+    //   item.SKU = listaSkuBase.FirstOrDefault(f => f.Id == item.IdSKU);
+    // }
   }
 
   public void EditarItem(CustoProducaoDTO i)

@@ -14,5 +14,6 @@
     public bool? Interno { get; set; }
     public Guid? IdInsumo { get; set; }
     public virtual Insumo Insumo { get; set; }
+    public virtual ICollection<CustoProducaoDetalhe> ListaCustoProducaoDetalhe { get; set; }
   }
 }

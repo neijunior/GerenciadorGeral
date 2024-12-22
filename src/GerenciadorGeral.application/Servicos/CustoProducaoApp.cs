@@ -32,14 +32,14 @@ namespace GerenciadorGeral.application.Servicos
         {
           Id = Guid.NewGuid(),
           IdSKU = item.IdSKU,
-          qtdUtilizada = item.qtdUtilizada,
+          QuantidadeUtilizada = item.QuantidadeUtilizada,
           CustoAquisicaoItem = item.CustoAquisicaoItem
         });
       }
 
       foreach (var item in lista)
       {
-        item.ValorCustoProducao = ((item.CustoAquisicaoItem * item.qtdUtilizada) / item.SKU.Quantidade);
+        item.ValorCustoProducao = ((item.CustoAquisicaoItem * item.QuantidadeUtilizada) / item.SKU.Quantidade);
       }
 
       return lista;

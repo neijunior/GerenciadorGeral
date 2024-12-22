@@ -16,7 +16,7 @@ namespace GerenciadorGeral.application.Servicos
     protected readonly ISKUServico _servicoSKU;
     protected readonly IInsumoServico _servicoInsumo;
     protected readonly IMapper _iMapper;
-    public CustoProducaoDetalheApp(IMapper iMapper, ICustoProducaoDetalheServico servicoCustoProducaoDetalhe, ICompraItemServico servicoCompraItem, 
+    public CustoProducaoDetalheApp(IMapper iMapper, ICustoProducaoDetalheServico servicoCustoProducaoDetalhe, ICompraItemServico servicoCompraItem,
                                    ISKUServico servicoSKU, IInsumoServico servicoInsumo) : base(iMapper, servicoCustoProducaoDetalhe)
     {
       this._iMapper = iMapper;
@@ -26,7 +26,35 @@ namespace GerenciadorGeral.application.Servicos
       this._servicoInsumo = servicoInsumo;
     }
 
-    private void CalcularValorCusto(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
+    private void CalcularValorCustoSKU(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
+    {
+      var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU.Value).Result);      
+      if (sku != null && sku.Interno)
+      {
+        var custoProducao = _servicoBase.Listar<CustoProducao>(w => w.IdSKU == sku.Id, i => i.ListaProducaoDetalhe).Result;
+        var item = custoProducao.OrderByDescending(o => o.DataCalculo).FirstOrDefault();
+
+        detalhe.CustoAquisicaoItem = item.ListaProducaoDetalhe.Sum(su => su.ValorCustoProducao);
+      }
+      else
+      {
+        if (detalhe.CustoAquisicaoItem == 0 || atualizarValor)
+        {
+          var compra = _servicoCompraItem.ConsultarUltimaCompra(detalhe.IdSKU.Value).Result;
+          //detalhe.Insumo = _iMapper.Map<InsumoDTO>(insumo);
+          //detalhe.CustoAquisicaoItem = _servicoCompraItem.ConsultarCustoMedioCompraInsumo(insumo.Id).Result;
+        }
+      }
+
+      //detalhe.SKU = sku;
+
+      TratarCusto(ref detalhe);
+
+      detalhe.SKU = null;
+      detalhe.CustoProducao = null;
+    }
+
+    private void CalcularValorCustoInsumo(ref CustoProducaoDetalheDTO detalhe, bool atualizarValor)
     {
       //var sku = _iMapper.Map<SKUDTO>(_servicoSKU.SelectById(detalhe.IdSKU.Value).Result);
       var insumo = _servicoInsumo.Consultar(detalhe.IdInsumo.Value).Result;
@@ -41,6 +69,7 @@ namespace GerenciadorGeral.application.Servicos
         if (detalhe.CustoAquisicaoItem == 0 || atualizarValor)
         {
           //var compra = _servicoCompraItem..ConsultarUltimaCompra(detalhe.IdSKU).Result;
+          detalhe.Insumo = _iMapper.Map<InsumoDTO>(insumo); ;
           detalhe.CustoAquisicaoItem = _servicoCompraItem.ConsultarCustoMedioCompraInsumo(insumo.Id).Result;
         }
       }
@@ -64,8 +93,10 @@ namespace GerenciadorGeral.application.Servicos
 
       try
       {
-
-        CalcularValorCusto(ref detalhe, false);
+        if (detalhe.IdInsumo.HasValue)
+          CalcularValorCustoInsumo(ref detalhe, false);
+        else
+          CalcularValorCustoSKU(ref detalhe, true);
 
         CustoProducaoDetalhe compraItemBD = await _servicoBase.Consultar<CustoProducaoDetalhe>(w => w.Id == detalhe.Id, i => i.Insumo);
         bool novo = compraItemBD == null;
@@ -90,13 +121,17 @@ namespace GerenciadorGeral.application.Servicos
     }
 
     public async Task<ICollection<CustoProducaoDetalheDTO>> AtualizarValoresCusto(Guid IdCustoProducao)
-    {      
-      var custoProducao = await _servicoCompraItem.Consultar<CustoProducao>(w => w.Id == IdCustoProducao, i => i.ListaProducaoDetalhe);
+    {
+      var custoProducao = await _servicoCompraItem.Consultar<CustoProducao>(w => w.Id == IdCustoProducao, i=> i.SKU, i => i.ListaProducaoDetalhe);
       ICollection<CustoProducaoDetalheDTO> listaTratada = new HashSet<CustoProducaoDetalheDTO>();
       foreach (var item in custoProducao.ListaProducaoDetalhe)
       {
         CustoProducaoDetalheDTO itemClone = _iMapper.Map<CustoProducaoDetalheDTO>(item);
-        CalcularValorCusto(ref itemClone, true);
+        if (item.IdInsumo.HasValue)
+          CalcularValorCustoInsumo(ref itemClone, true);
+        else
+          CalcularValorCustoSKU(ref itemClone, true);
+
         listaTratada.Add(itemClone);
       }
 
@@ -120,7 +155,7 @@ namespace GerenciadorGeral.application.Servicos
 
     private void TratarCusto(ref CustoProducaoDetalheDTO detalhe)
     {
-      detalhe.ValorCustoProducao = ((detalhe.CustoAquisicaoItem * detalhe.qtdUtilizada)).Truncar(2);// / TratarQtdUnidadeMedida(detalhe.SKU.CodigoUnidadeMedida)).Truncar(2);
+      detalhe.ValorCustoProducao = ((detalhe.CustoAquisicaoItem * detalhe.QuantidadeUtilizada)).Truncar(2);// / TratarQtdUnidadeMedida(detalhe.SKU.CodigoUnidadeMedida)).Truncar(2);
 
     }
 
